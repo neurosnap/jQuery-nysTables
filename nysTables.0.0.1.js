@@ -42,6 +42,7 @@
 		$.extend(true, this.settings, options);
 
 		init(this);
+		listen(this);
 
 		return this.settings;
 
@@ -68,16 +69,28 @@
 
 					var json_to_dt = jsonToDataTable(scope, data.data);
 					
+					//initialize datatables as well as combine options from nysTables object
 					$(that).dataTable($.extend({}, {
 						"bDestroy": true,
 						"aaData": json_to_dt.rows,
-						"aoColumns": json_to_dt.columns
+						"aoColumns": json_to_dt.columns,
+						"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+
+				      $(nRow).attr("nys-id", "");
+
+				    }
 					}, scope.settings.datatable));
 
 				}
 			});
 
 		});
+
+	};
+
+	function listen(scope) {
+
+		$()
 
 	};
 
@@ -88,7 +101,7 @@
 			"rows": []
 		};
 		
-		var row_agg = '';
+		var row_agg = '<a href="#" class="nys-manage">Edit</a>,';
 		var first = true;
 
 		for (var i = 0; i < data.length; i++) {
@@ -96,6 +109,9 @@
 			var obj = data[i];
 
 			if (first) {
+
+				//manage column
+				ret.columns.push({ "sTitle": "Manage" });
 
 				for (var prop in obj) {
 
