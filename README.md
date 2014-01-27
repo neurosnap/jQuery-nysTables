@@ -95,6 +95,14 @@ Converts JSON formatted data into an HTML select dropdown formatter HTML string 
 		"value": 2
 	}];
 
+#### isOdd (number)
+Determines whether or not number is even or odd
+
+#### capFirst (string)
+Capitalizes first character in string
+
+#### toTitleCase (string)
+Replaces underscores with spaces and then capitalizes the first letter of each word
 
 Credits 
 ---------
