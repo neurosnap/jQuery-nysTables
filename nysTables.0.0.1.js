@@ -51,6 +51,22 @@
 	//Initializes datatables and nysTables
 	function init(scope) {
 
+		//create modal dialog
+		if ($("#nys-boxes").length == 0) {
+
+			$("body").append('<div id="nys-boxes"><div id="dialog" class="window"></div><div id="nys-mask"></div></div>');
+
+			//set mask to height and width of page
+			var mask_height = $(document).height();
+			var mask_width = $(window).width();
+
+			$("#nys-mask").css({
+				"height": mask_height,
+				"width": mask_width
+			});
+
+		}
+
 		scope.each(function() {
 
 			var that = this;
@@ -67,7 +83,10 @@
 				},
 				"success": function(data, text_status, jqr) {
 
-					var json_to_dt = jsonToDataTable(scope, data.data);
+					//make primary key easier to get by removing array
+					data.PK = data.PK[0].PK_column;
+
+					var json_to_dt = jsonToDataTable(scope, data);
 					
 					//initialize datatables as well as combine options from nysTables object
 					$(that).dataTable($.extend({}, {
@@ -76,9 +95,11 @@
 						"aoColumns": json_to_dt.columns,
 						"fnCreatedRow": function( nRow, aData, iDataIndex ) {
 
-				      $(nRow).attr("nys-id", "");
+							//add class to datatables
+							$("td:eq(0)", nRow).html('<a href="#">Edit</a>');
+							$("td:eq(0)", nRow).addClass("nys-manage");
 
-				    }
+						}
 					}, scope.settings.datatable));
 
 				}
@@ -90,7 +111,32 @@
 
 	function listen(scope) {
 
-		$()
+		$(scope).on("click", ".nys-manage a", function(e) {
+
+			e.preventDefault();
+
+			var nRow = $(this).parent().parent();
+
+			//transition effect		
+			$('#nys-mask').fadeTo("slow", 0.6);	
+
+			//get table name
+			var table = nRow.parent().parent().attr("nys-table") || scope.settings.table;
+
+			$("#nys-boxes #dialog")
+				.fadeIn(600)
+				.html("Table: " + table + ", PK Column: " + nRow.find(".nys-pk").text());
+
+		});
+
+		$("body").on("click", "#nys-mask", function(e) {
+
+			e.preventDefault();
+
+			$(this).hide();
+			$(".window").hide();
+
+		});
 
 	};
 
@@ -101,12 +147,14 @@
 			"rows": []
 		};
 		
-		var row_agg = '<a href="#" class="nys-manage">Edit</a>,';
+		var row_agg = '';
 		var first = true;
 
-		for (var i = 0; i < data.length; i++) {
+		for (var i = 0; i < data.data.length; i++) {
 
-			var obj = data[i];
+			row_agg = 'Edit,';
+
+			var obj = data.data[i];
 
 			if (first) {
 
@@ -115,7 +163,13 @@
 
 				for (var prop in obj) {
 
-					var options = { "sTitle": toTitleCase(prop) }
+					var options = {};
+
+					if (prop == data.PK) {
+						options.sClass = "nys-pk";
+					}
+
+					options.sTitle = toTitleCase(prop);
 					ret.columns.push(options);
 
 				}
