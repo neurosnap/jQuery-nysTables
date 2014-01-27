@@ -19,45 +19,42 @@ The most basic configuration requires "table" tag or "nys-table" data attribute 
 The nysTables object returns the settings object for nysTables.
 
 HTML
-'''
-<body>
+	<body>
 
-	<table class="nysClass" nys-table="users"></table>
-	<table class="nysClass" nys-table="errors"></table>
+		<table class="nysClass" nys-table="users"></table>
+		<table class="nysClass" nys-table="errors"></table>
 
-	<table id="nysID"></table>
+		<table id="nysID"></table>
 
-</body>
-'''
+	</body>
+
 
 Javascript
-'''
-$(function() {
+	$(function() {
 
-	var nt = $(".nysClass").nysTables();
+		var nt = $(".nysClass").nysTables();
 
-	var nti = $("#nysID").nysTables({ "table": "users" });
+		var nti = $("#nysID").nysTables({ "table": "users" });
 
-});
-'''
+	});
+
 
 db.php -- Settings for database connection
-'''
-<?php
+	<?php
 
-	$db = new stdClass();
+		$db = new stdClass();
 
-	//Server address
-	$db->server = "";
-	//Database name
-	$db->dba = "";
-	$db->user = "";
-	$db->pass = "";
-	//e.g. sqlsrv, mssql, or mysql
-	$db->driver = "sqlsrv";
+		//Server address
+		$db->server = "";
+		//Database name
+		$db->dba = "";
+		$db->user = "";
+		$db->pass = "";
+		//e.g. sqlsrv, mssql, or mysql
+		$db->driver = "sqlsrv";
 
-?>
-'''
+	?>
+
 
 Options
 ---------
@@ -87,15 +84,13 @@ converts it into a DataTable formatted options object to be passed into ex: $("t
 #### jsonToSelect (data)
 Converts JSON formatted data into an HTML select dropdown formatter HTML string and returns it.
 
-'''
-data = [{
-	"text": "Option 1",
-	"value": 1
-}, {
-	"text": "Option 2",
-	"value": 2
-}];
-'''
+	data = [{
+		"text": "Option 1",
+		"value": 1
+	}, {
+		"text": "Option 2",
+		"value": 2
+	}];
 
 
 Credits 
