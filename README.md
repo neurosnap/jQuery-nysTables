@@ -14,11 +14,12 @@ Dependencies:
 How-To
 ---------
 
-nysTables gets initialized on a <table> tag.  
-The most basic configuration requires "table" tag or "nys-table" data attribute in the <table> tag.
+nysTables gets initialized on a table tag.  
+The most basic configuration requires "table" tag or "nys-table" data attribute in the table tag.
 The nysTables object returns the settings object for nysTables.
 
 HTML
+
 	<body>
 
 		<table class="nysClass" nys-table="users"></table>
@@ -30,6 +31,7 @@ HTML
 
 
 Javascript
+
 	$(function() {
 
 		var nt = $(".nysClass").nysTables();
@@ -40,6 +42,7 @@ Javascript
 
 
 db.php -- Settings for database connection
+
 	<?php
 
 		$db = new stdClass();
