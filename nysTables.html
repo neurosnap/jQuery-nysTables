@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="author" content="Eric Bower" />
+		<meta name="description" content="Front-end user interface to add, edit, and remove columns, data from a relational database" />
+		<meta name="application-name" content="nysTables 0.0.1" />
+
+		<link href="assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+		<link href="assets/css/nysTables.css" rel="stylesheet" type="text/css" />
+		
+		<script type="text/javascript" src="assets/js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+
+		<script type="text/javascript" src="nysTables.0.0.1.js"></script>
+		
+		<script type="text/javascript">
+
+			$(function() {
+
+				var nt = $(".nysClass").nysTables();
+
+				var nti = $("#nysID").nysTables({ "table": "users" });
+
+			});
+
+		</script>
+	
+	</head>
+
+	<body>
+
+		<table class="nysClass" nys-table="users"></table>
+		<table class="nysClass" nys-table="errors"></table>
+
+		<table id="nysID"></table>
+
+	</body>
+
+</html>
