@@ -88,19 +88,27 @@
 
 					var json_to_dt = jsonToDataTable(scope, data);
 					
-					//initialize datatables as well as combine options from nysTables object
-					$(that).dataTable($.extend({}, {
+					//defualt dt settings
+					var dt_settings = {
 						"bDestroy": true,
 						"aaData": json_to_dt.rows,
-						"aoColumns": json_to_dt.columns,
-						"fnCreatedRow": function( nRow, aData, iDataIndex ) {
+						"aoColumns": json_to_dt.columns
+					};
 
-							//add class to datatables
-							$("td:eq(0)", nRow).html('<a href="#">Edit</a>');
-							$("td:eq(0)", nRow).addClass("nys-manage");
+					//combine settings and options
+					$.extend(true, dt_settings, scope.settings.datatable);
 
-						}
-					}, scope.settings.datatable));
+						//datatables callback to get row data after row has been created
+					dt_settings.fnCreatedRow = function(nRow, aData, iDataIndex) {
+						
+						//add class to datatables
+						$("td:eq(0)", nRow).html('<a href="#">Edit</a>');
+						$("td:eq(0)", nRow).addClass("nys-manage");
+
+					};
+
+					//initialize datatables as well as combine options from nysTables object
+					$(that).dataTable(dt_settings);
 
 				}
 			});
