@@ -84,7 +84,7 @@
 				"success": function(data, text_status, jqr) {
 
 					//make primary key easier to get by removing array
-					data.PK = data.PK[0].PK_column;
+					//data.PK = data.PK[0].PK_column;
 
 					var json_to_dt = jsonToDataTable(scope, data);
 					
@@ -130,10 +130,10 @@
 
 			//get table name
 			var table = nRow.parent().parent().attr("nys-table") || scope.settings.table;
+			var pk = nRow.find(".nys-pk").text();
 
-			$("#nys-boxes #dialog")
-				.fadeIn(600)
-				.html("Table: " + table + ", PK Column: " + nRow.find(".nys-pk").text());
+			//launch modal
+			modalLaunch(scope, table, pk);
 
 		});
 
@@ -146,6 +146,33 @@
 
 		});
 
+	};
+
+	function modalLaunch(scope, table, pk) {
+
+		$.ajax({
+			"url": scope.settings.url,
+			"type": "POST",
+			"dataType": "json",
+			"data": {
+				"action": "get_record",
+				"table": table,
+				"pk": pk
+			},
+			"success": function(data, tet_status, jqr) {
+
+				$("#nys-boxes #dialog")
+					.fadeIn(600)
+					.html(modalDisplay(scope, data));
+
+			}
+		});
+
+	};
+
+	function modalDisplay(scope, data) {
+		console.log(data);
+		return "SUP";
 	};
 
 	function jsonToDataTable(scope, data) {

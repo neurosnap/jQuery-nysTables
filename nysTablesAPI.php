@@ -5,10 +5,14 @@
 	require("assets/php/orm.php");
 	$orm = new ORM();
 
-	$action = $_POST['action'];
+	if (array_key_exists("action", $_REQUEST)) {
+		$action = $_REQUEST['action'];
+	} else {
+		die("No GET or POST 'action' key found, cannot proceed.");
+	}
 
 	if (is_callable($action)) {
-		call_user_func($action, $orm, $_POST);
+		call_user_func($action, $orm, $_REQUEST);
 	}
 
 	function get_table($orm, $post) {
@@ -33,16 +37,7 @@
 
 		$response->columns = $orm->Qu($query, array(&$post['table']), false);
 
-		//get Primary Key column name
-		$query = "SELECT 
-								column_name as 'PK_column'
-							FROM 
-								INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-							WHERE 
-								OBJECTPROPERTY(OBJECT_ID(constraint_name), 'IsPrimaryKey') = 1
-								AND table_name = (?)";
-
-		$response->PK = $orm->Qu($query, array(&$post['table']), false);
+		$response->PK = get_pk($orm, $post);
 
 		//get Foreign Key data
 		$query = "SELECT 
@@ -71,6 +66,39 @@
 		$response->FK = $orm->Qu($query, array(&$post['table'], &$post['table']), false);
 
 		echo json_encode($response);
+
+	}
+
+	function get_record($orm, $post) {
+
+		$response = new stdClass();
+
+		$PK = get_pk($orm, $post);
+
+		$query = "SELECT * FROM " . $post['table'] . " WHERE (?) = (?)";
+
+		echo json_encode($orm->Qu($query, array($PK, $post['pk']), false));
+
+	}
+
+	function get_pk($orm, $post) {
+
+		//get Primary Key column name
+		$query = "SELECT 
+							column_name as 'PK_column'
+						FROM 
+							INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+						WHERE 
+							OBJECTPROPERTY(OBJECT_ID(constraint_name), 'IsPrimaryKey') = 1
+							AND table_name = (?)";
+
+		$PK = $orm->Qu($query, array(&$post['table']), false);
+
+		if (count($PK) > 0) {
+			return $PK[0]->PK_column;
+		} else {
+			return false;
+		}
 
 	}
 
