@@ -23,12 +23,28 @@
     
     $response = new stdClass();
 
-    //get table data
-    $query = "SELECT * FROM " . $post['table'];
+    //default
+    $query = "SELECT * FROM " . $post["table"];
+
+    //any columns that should not be grabbed?
+    if (array_key_exists("columns", $post)) {
+
+      $js_cols = json_decode($post["columns"], true);
+
+      if (gettype($js_cols) === "array" 
+          && count($js_cols) > 0) {
+
+        $sql_columns = json_decode(json_encode(get_columns($orm, $post["table"])), true);
+
+        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $post["table"];
+
+      }
+
+    }
 
     $response->data = $orm->Qu($query, false, false);
 
-    $response->PK = get_pk($orm, $post['table']);
+    $response->PK = get_pk($orm, $post["table"]);
 
     echo json_encode($response);
 
@@ -38,25 +54,31 @@
 
     $response = new stdClass();
 
-    $PK = get_pk($orm, $post['table']);
+    $PK = get_pk($orm, $post["table"]);
 
-    $query = "SELECT * FROM " . $post['table'] . " WHERE " . $PK . " = ?";
+    //default
+    $query = "SELECT * FROM " . $post["table"] . " WHERE " . $PK . " = ?";
+
+    //any columns that should not be grabbed?
+    if (array_key_exists("columns", $post)) {
+
+      $js_cols = json_decode($post["columns"], true);
+
+      if (gettype($js_cols) === "array" 
+          && count($js_cols) > 0) {
+
+        $sql_columns = json_decode(json_encode(get_columns($orm, $post["table"])), true);
+
+        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $post["table"] . " WHERE " . $PK . " = ?";
+
+      }
+
+    }
 
     $response->data = $orm->Qu($query, array(&$post['pk']), false);
     $response->data = $response->data[0];
 
-    //get table column information
-    $query = "SELECT 
-                COLUMN_NAME as 'name', 
-                DATA_TYPE as 'data_type',
-                COLUMN_DEFAULT as 'default', 
-                IS_NULLABLE as 'is_nullable'
-              FROM 
-                INFORMATION_SCHEMA.COLUMNS
-              WHERE
-                TABLE_NAME = (?)";
-
-    $response->columns = $orm->Qu($query, array(&$post['table']), false);
+    $response->columns = get_columns($orm, $post["table"]);
 
     //get Foreign Key data
     $query = "SELECT 
@@ -82,10 +104,9 @@
                 FK.TABLE_NAME = (?)
                 OR PK.TABLE_NAME = (?)";
 
-    $response->FK = $orm->Qu($query, array(&$post['table'], &$post['table']), false);
-    //$response->FK = $response->FK[0];
+    $response->FK = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
 
-    if ($response->FK > 0) {
+    if (count($response->FK) > 0) {
 
       for ($i = 0; $i < count($response->FK); $i++) {
 
@@ -125,6 +146,100 @@
       return false;
 
     }
+
+  }
+
+  function get_columns($orm, $table) {
+
+    //get table column information
+    $query = "SELECT 
+                COLUMN_NAME as 'name', 
+                DATA_TYPE as 'data_type',
+                COLUMN_DEFAULT as 'default', 
+                IS_NULLABLE as 'is_nullable'
+              FROM 
+                INFORMATION_SCHEMA.COLUMNS
+              WHERE
+                TABLE_NAME = (?)";
+
+    $columns = $orm->Qu($query, array(&$table), false);
+
+    if (count($columns) > 0) {
+
+      return $columns;
+
+    } else {
+
+      return false;
+
+    }
+
+  }
+
+  //string of comma delimited columns to grab from SQL table
+  function get_column_list($sql_columns, $js_columns) {
+
+    $list = array();
+
+    //list sql columns for table
+    for ($j = 0; $j < count($sql_columns); $j++) {
+
+      $found_column = false;
+      $add_column = false;
+
+      //loop js settings
+      for ($i = 0; $i < count($js_columns); $i++) {
+
+        //found a match
+        if ($js_columns[$i]["column"] == $sql_columns[$j]["name"]) {
+
+          $found_column = true;
+
+          //check to make sure the sql column is nullable or has a default value
+          if ($sql_columns[$j]["is_nullable"] === "YES" || !is_null($sql_columns[$j]["default"])) {
+          
+            //does js settings have visible property? 
+            if (array_key_exists("visible", $js_columns[$i])) {
+
+              if ($js_columns[$i]["visible"]) {
+
+                $add_column = true;
+
+              }
+
+            } else {
+
+              $add_column = true;
+
+            }
+
+          } else {
+
+            $add_column = true;
+
+          }
+
+        }
+
+      }
+
+      if (!$found_column) {
+
+        $add_column = true;
+
+      }
+
+      //add column, duh!
+      if ($add_column) {
+
+        //add to list of columns to grab data for
+        array_push($list, $sql_columns[$j]["name"]);
+
+      }
+
+    }
+
+    return implode(",", $list);
 
   }
 

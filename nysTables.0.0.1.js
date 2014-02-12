@@ -44,6 +44,16 @@
     init(this);
     listen(this);
 
+    /*
+    //public function
+    this.settings.getName = function() {
+
+      that.each(function() {
+        console.log("word");
+      });
+
+    };*/
+
     return this.settings;
 
   };
@@ -79,14 +89,12 @@
         "dataType": "json",
         "data": {
           "action": "get_table",
-          "table": table
+          "table": table,
+          "columns": JSON.stringify(scope.settings.columns)
         },
         "success": function(data, text_status, jqr) {
 
-          //make primary key easier to get by removing array
-          //data.PK = data.PK[0].PK_column;
-
-          var json_to_dt = jsonToDataTable(scope, data);
+          var json_to_dt = jsonToDataTable(scope, data.data);
           
           //defualt dt settings
           var dt_settings = {
@@ -117,6 +125,7 @@
 
   };
 
+  //Master event handler function
   function listen(scope) {
 
     $(scope).on("click", ".nys-manage a", function(e) {
@@ -148,6 +157,7 @@
 
   };
 
+  //Get data for modal edit popup modal
   function modalLaunch(scope, table, pk) {
 
     $.ajax({
@@ -157,7 +167,8 @@
       "data": {
         "action": "get_record",
         "table": table,
-        "pk": pk
+        "pk": pk,
+        "columns": JSON.stringify(scope.settings.columns)
       },
       "success": function(data, tet_status, jqr) {
 
@@ -170,13 +181,25 @@
 
   };
 
+  //Display modal edit popup
   function modalDisplay(scope, data) {
-    console.log(data);
-    return "SUP";
+    
+    var content = '';
+
+    for (var i = 0; i < data.columns.length; i++) {
+
+      
+
+    }
+
+    return content;
+
   };
 
+  //data = array of objects that converts it into a dataTable object
   function jsonToDataTable(scope, data) {
 
+    //"ret"urned object
     var ret = {
       "columns": [],
       "rows": []
@@ -185,11 +208,11 @@
     var row_agg = '';
     var first = true;
 
-    for (var i = 0; i < data.data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
 
       row_agg = 'Edit,';
 
-      var obj = data.data[i];
+      var obj = data[i];
 
       if (first) {
 
@@ -200,11 +223,18 @@
 
           var options = {};
 
-          if (prop == data.PK) {
-            options.sClass = "nys-pk";
+          //Does data contain primary key property?
+          if (data.hasOwnProperty("PK")) {
+            
+            //found primary key? add a special class for it
+            if (prop == data.PK) {
+              options.sClass = "nys-pk";
+            }
+
           }
 
           options.sTitle = toTitleCase(prop);
+
           ret.columns.push(options);
 
         }
@@ -270,11 +300,3 @@
   };
 
 }(jQuery, window, document));
-
-/*this.settings.getName = function() {
-
-  that.each(function() {
-    console.log(that.settings.name);
-  });
-
-};*/

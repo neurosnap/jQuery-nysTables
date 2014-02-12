@@ -8,8 +8,8 @@ Set-up
 
 Dependencies:
 
-	* jQuery (http://jquery.com/)
-	* Datatables (https://datatables.net/)
+  * jQuery (http://jquery.com/)
+  * Datatables (https://datatables.net/)
 
 How-To
 ---------
@@ -20,43 +20,43 @@ The nysTables object returns the settings object for nysTables.
 
 HTML
 
-	<body>
+  <body>
 
-		<table class="nysClass" nys-table="users"></table>
-		<table class="nysClass" nys-table="errors"></table>
+    <table class="nysClass" nys-table="users"></table>
+    <table class="nysClass" nys-table="errors"></table>
 
-		<table id="nysID"></table>
+    <table id="nysID"></table>
 
-	</body>
+  </body>
 
 
 Javascript
 
-	$(function() {
+  $(function() {
 
-		var nt = $(".nysClass").nysTables();
+    var nt = $(".nysClass").nysTables();
 
-		var nti = $("#nysID").nysTables({ "table": "users" });
+    var nti = $("#nysID").nysTables({ "table": "users" });
 
-	});
+  });
 
 
 db.php -- Settings for database connection
 
-	<?php
+  <?php
 
-		$db = new stdClass();
+    $db = new stdClass();
 
-		//Server address
-		$db->server = "";
-		//Database name
-		$db->dba = "";
-		$db->user = "";
-		$db->pass = "";
-		//e.g. sqlsrv, mssql, or mysql
-		$db->driver = "sqlsrv";
+    //Server address
+    $db->server = "";
+    //Database name
+    $db->dba = "";
+    $db->user = "";
+    $db->pass = "";
+    //e.g. sqlsrv, mssql, or mysql
+    $db->driver = "sqlsrv";
 
-	?>
+  ?>
 
 
 Options
@@ -69,9 +69,13 @@ URL pointing to server reference for AJAX call
 DataTable options object that can customize datatable that will be displayed
 
 #### fk as Array of Objects
-  *  table (String) -- Foreign key table that nysTables searches for to set certain properties
+  *  table (String) -- Foreign key table that nysTables searches to apply certain properties
   *  column (String) -- Column name in the foreign key table that will be used as the text
-  											for the select dropdown
+                        for the select dropdown
+
+#### columns as Array of Objects
+  *  column (String) -- Name of the column that nysTables searches to apply certain properties
+  *  visible (Bool default = true) -- Determines whether or not to display the column, true if column is not nullable or default
 
 Callbacks
 ---------
@@ -92,13 +96,13 @@ converts it into a DataTable formatted options object to be passed into ex: $("t
 #### jsonToSelect (data)
 Converts JSON formatted data into an HTML select dropdown formatter HTML string and returns it.
 
-	data = [{
-		"text": "Option 1",
-		"value": 1
-	}, {
-		"text": "Option 2",
-		"value": 2
-	}];
+  data = [{
+    "text": "Option 1",
+    "value": 1
+  }, {
+    "text": "Option 2",
+    "value": 2
+  }];
 
 #### modalLaunch (scope, table, pk)
 AJAX call to grab specific column data as well as key restraints, foreign key data and displays
@@ -106,6 +110,9 @@ popup modal
 
 #### modalDisplay (scope, data)
 Injects record form data into popup modal with edit, delete options
+
+#### displayColumn (scope, column)
+Determines whether or not to display a column in the dataTable, returns true or false
 
 #### isOdd (number)
 Determines whether or not number is even or odd

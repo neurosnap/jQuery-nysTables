@@ -22,7 +22,16 @@
 
 				var nt = $(".nysClass").nysTables();
 
-				var nti = $("#nysID").nysTables({ "table": "users" });
+				var nti = $("#nysID").nysTables({ 
+					"table": "users", 
+					"columns": [{
+						"column": "updated_at",
+						"visible": false
+					}, {
+						"column": "visi",
+						"visible": false			
+					}]
+				});
 
 			});
 
