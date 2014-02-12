@@ -94,7 +94,7 @@
         },
         "success": function(data, text_status, jqr) {
 
-          var json_to_dt = jsonToDataTable(scope, data.data);
+          var json_to_dt = jsonToDataTable(scope, data);
           
           //defualt dt settings
           var dt_settings = {
@@ -188,11 +188,39 @@
 
     for (var i = 0; i < data.columns.length; i++) {
 
-      
+      //console.log(data.columns[i]);
+      //console.log(getInputColumn(scope, data.columns[i]));
+      content += getInputColumn(scope, data.columns[i]) + ' <br />';
 
     }
 
     return content;
+
+  };
+
+  function getInputColumn(scope, column) {
+
+    var title = toTitleCase(column.name) + ': ';
+
+    var condition = {
+      "int": '<input type="text" value="" class="nys-input">',
+      "float": '<input type="text" value="" class="nys-input">',
+      "varchar": '<input type="text" value="" class="nys-input">',
+      "text": '<textarea class="nys-input"></textarea>',
+      "bit": 'True <input type="radio" name="" value="1" class="nys-input"> False <input type="radio" name="" value="0" class="nys-input">',
+      "date": '<input type="" value="" class="nys-input">',
+      "datetime": '<input type="" value="" class="nys-input">'
+    };
+
+    if (condition.hasOwnProperty(column.data_type)) {
+
+      return title + condition[column.data_type];
+
+    } else {
+
+      return '<strong style="color: tomato;">Error with column (' + column.name + ') setup</strong>';
+
+    }
 
   };
 
@@ -208,11 +236,11 @@
     var row_agg = '';
     var first = true;
 
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.data.length; i++) {
 
       row_agg = 'Edit,';
 
-      var obj = data[i];
+      var obj = data.data[i];
 
       if (first) {
 

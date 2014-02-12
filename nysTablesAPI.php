@@ -75,6 +75,7 @@
 
     }
 
+    //echo $query;
     $response->data = $orm->Qu($query, array(&$post['pk']), false);
     $response->data = $response->data[0];
 
