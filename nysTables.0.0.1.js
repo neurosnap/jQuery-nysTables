@@ -188,8 +188,6 @@
 
     for (var i = 0; i < data.columns.length; i++) {
 
-      //console.log(data.columns[i]);
-      //console.log(getInputColumn(scope, data.columns[i]));
       content += getInputColumn(scope, data.columns[i]) + ' <br />';
 
     }

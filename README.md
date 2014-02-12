@@ -89,6 +89,16 @@ Methods (Private)
 #### init (scope)
 Initializes nysTables and datatables after all the settings and options have been set up.
 
+#### modalLaunch (scope, table, pk)
+AJAX call to grab specific column data as well as key restraints, foreign key data and displays
+popup modal
+
+#### modalDisplay (scope, data)
+Injects record form data into popup modal with edit, delete options
+
+#### getInputColumn (scope, columns)
+Returns string with input element for specified column and properties such as "required"
+
 #### jsonToDataTable (scope, data)
 Converts JSON formatted response data from the server and 
 converts it into a DataTable formatted options object to be passed into ex: $("table").dataTable(jsonToDataTable(scope, data));
@@ -103,16 +113,6 @@ Converts JSON formatted data into an HTML select dropdown formatter HTML string 
     "text": "Option 2",
     "value": 2
   }];
-
-#### modalLaunch (scope, table, pk)
-AJAX call to grab specific column data as well as key restraints, foreign key data and displays
-popup modal
-
-#### modalDisplay (scope, data)
-Injects record form data into popup modal with edit, delete options
-
-#### displayColumn (scope, column)
-Determines whether or not to display a column in the dataTable, returns true or false
 
 #### isOdd (number)
 Determines whether or not number is even or odd
