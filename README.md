@@ -68,6 +68,11 @@ URL pointing to server reference for AJAX call
 #### datatable as Object
 DataTable options object that can customize datatable that will be displayed
 
+#### fk as Array of Objects
+  *  table (String) -- Foreign key table that nysTables searches for to set certain properties
+  *  column (String) -- Column name in the foreign key table that will be used as the text
+  											for the select dropdown
+
 Callbacks
 ---------
 
@@ -94,6 +99,13 @@ Converts JSON formatted data into an HTML select dropdown formatter HTML string 
 		"text": "Option 2",
 		"value": 2
 	}];
+
+#### modalLaunch (scope, table, pk)
+AJAX call to grab specific column data as well as key restraints, foreign key data and displays
+popup modal
+
+#### modalDisplay (scope, data)
+Injects record form data into popup modal with edit, delete options
 
 #### isOdd (number)
 Determines whether or not number is even or odd
