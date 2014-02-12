@@ -273,10 +273,11 @@
 
       for (var prop in obj) {
 
-        if (obj[prop] != null)
+        if (obj[prop] != null) {
           row_agg = row_agg + obj[prop].toString().replace(/,/g, '') + ',';
-        else
+        } else {
           row_agg += ",";
+        }
         
       }
 
