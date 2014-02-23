@@ -2,22 +2,18 @@
   
   header('Content-type: application/json');
 
+  if (!array_key_exists("action", $_REQUEST))
+    die("No GET or POST 'action' key found, cannot proceed.");
+
+  $action = $_REQUEST['action'];
+
+  if (!is_callable($action))
+    die("No GET or POST 'action' key matches a function in the API, cannot proceed.");
+
   require("assets/php/orm.php");
   $orm = new ORM();
 
-  if (array_key_exists("action", $_REQUEST)) {
-
-    $action = $_REQUEST['action'];
-
-  } else {
-
-    die("No GET or POST 'action' key found, cannot proceed.");
-
-  }
-
-  if (is_callable($action)) {
-    call_user_func($action, $orm, $_REQUEST);
-  }
+  call_user_func($action, $orm, $_REQUEST);
 
   function get_table($orm, $post) {
     
@@ -76,8 +72,8 @@
     }
 
     //echo $query;
-    $response->data = $orm->Qu($query, array(&$post['pk']), false);
-    $response->data = $response->data[0];
+    $response->values = $orm->Qu($query, array(&$post['pk']), false);
+    $response->values = $response->values[0];
 
     $response->columns = get_columns($orm, $post["table"]);
 
@@ -105,17 +101,16 @@
                 FK.TABLE_NAME = (?)
                 OR PK.TABLE_NAME = (?)";
 
-    $response->FK = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
+    $response->constraints = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
 
-    if (count($response->FK) > 0) {
+    if (count($response->constraints) > 0) {
 
-      for ($i = 0; $i < count($response->FK); $i++) {
+      for ($i = 0; $i < count($response->constraints); $i++) {
 
-        $response->FK[$i]->FK_PK = get_pk($orm, $response->FK[$i]->FK_table);
+        $response->constraints[$i]->FK_PK = get_pk($orm, $response->constraints[$i]->FK_table);
 
-        $query = "SELECT * FROM " . $response->FK[$i]->FK_table;
-
-        $response->FK[$i]->data = $orm->Qu($query, false, false);
+        $query = "SELECT * FROM " . $response->constraints[$i]->FK_table;
+        $response->constraints[$i]->data = $orm->Qu($query, false, false);
 
       }
   
@@ -139,13 +134,9 @@
     $PK = $orm->Qu($query, array(&$table), false);
 
     if (count($PK) > 0) {
-
       return $PK[0]->PK_column;
-
     } else {
-
       return false;
-
     }
 
   }
@@ -166,13 +157,9 @@
     $columns = $orm->Qu($query, array(&$table), false);
 
     if (count($columns) > 0) {
-
       return $columns;
-
     } else {
-
       return false;
-
     }
 
   }
@@ -183,41 +170,33 @@
     $list = array();
 
     //list sql columns for table
-    for ($j = 0; $j < count($sql_columns); $j++) {
+    foreach ($sql_columns as $sql_col) {
 
       $found_column = false;
       $add_column = false;
 
-      //loop js settings
-      for ($i = 0; $i < count($js_columns); $i++) {
+      //list js columns from nysTables settings
+      foreach ($js_columns as $js_col) {
 
         //found a match
-        if ($js_columns[$i]["column"] == $sql_columns[$j]["name"]) {
+        if ($js_col["column"] == $sql_col["name"]) {
 
           $found_column = true;
 
-          //check to make sure the sql column is nullable or has a default value
-          if ($sql_columns[$j]["is_nullable"] === "YES" || !is_null($sql_columns[$j]["default"])) {
+          if ($sql_col["is_nullable"] === "YES" || !is_null($sql_col["default"])) {
           
-            //does js settings have visible property? 
-            if (array_key_exists("visible", $js_columns[$i])) {
+            if (array_key_exists("visible", $js_col)) {
 
-              if ($js_columns[$i]["visible"]) {
-
+              if ($js_col["visible"]) {
                 $add_column = true;
-
               }
 
             } else {
-
               $add_column = true;
-
             }
 
           } else {
-
             $add_column = true;
-
           }
 
         }
@@ -225,17 +204,12 @@
       }
 
       if (!$found_column) {
-
         $add_column = true;
-
       }
 
       //add column, duh!
       if ($add_column) {
-
-        //add to list of columns to grab data for
-        array_push($list, $sql_columns[$j]["name"]);
-
+        array_push($list, $sql_col["name"]);
       }
 
     }

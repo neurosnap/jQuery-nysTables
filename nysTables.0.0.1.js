@@ -188,7 +188,13 @@
 
     for (var i = 0; i < data.columns.length; i++) {
 
-      content += getInputColumn(scope, data.columns[i]) + ' <br />';
+      for (column in data.values) {
+
+        if (data.columns[i].name === column) {
+          content += getInputColumn(scope, data.columns[i], data.values[column]) + ' <br />';
+        }
+
+      }
 
     }
 
@@ -196,28 +202,27 @@
 
   };
 
-  function getInputColumn(scope, column) {
+  function getInputColumn(scope, column, value) {
+
+    if (value === null)
+      value = "";
 
     var title = toTitleCase(column.name) + ': ';
 
     var condition = {
-      "int": '<input type="text" value="" class="nys-input">',
-      "float": '<input type="text" value="" class="nys-input">',
-      "varchar": '<input type="text" value="" class="nys-input">',
-      "text": '<textarea class="nys-input"></textarea>',
-      "bit": 'True <input type="radio" name="" value="1" class="nys-input"> False <input type="radio" name="" value="0" class="nys-input">',
-      "date": '<input type="" value="" class="nys-input">',
-      "datetime": '<input type="" value="" class="nys-input">'
+      "int": '<input type="text" value="' + value + '" class="nys-input">',
+      "float": '<input type="text" value="' + value + '" class="nys-input">',
+      "varchar": '<input type="text" value="' + value + '" class="nys-input">',
+      "text": '<textarea class="nys-input">' + value + '</textarea>',
+      "bit": 'True <input type="radio" name="" value="1" class="nys-input" ' + ((value) ? "checked=checked" : "") + '> False <input type="radio" name="" value="0" class="nys-input" ' + ((!value) ? "checked=checked" : "") + '>',
+      "date": '<input type="" value="' + value + '" class="nys-input">',
+      "datetime": '<input type="" value="' + value + '" class="nys-input">'
     };
 
     if (condition.hasOwnProperty(column.data_type)) {
-
       return title + condition[column.data_type];
-
     } else {
-
       return '<strong style="color: tomato;">Error with column (' + column.name + ') setup</strong>';
-
     }
 
   };
@@ -305,15 +310,11 @@
   };
 
   function isOdd(num) {
-
     return num % 2;
-
   };
 
   function capFirst(string) {
-
     return string.charAt(0).toUpperCase() + string.slice(1);
-
   };
 
   //replaces underscores with spaces and then capitalizes
