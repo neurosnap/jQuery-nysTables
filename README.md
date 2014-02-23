@@ -20,6 +20,7 @@ The nysTables object returns the settings object for nysTables.
 
 HTML
 
+```
   <body>
 
     <table class="nysClass" nys-table="users"></table>
@@ -28,10 +29,11 @@ HTML
     <table id="nysID"></table>
 
   </body>
-
+```
 
 Javascript
 
+```
   $(function() {
 
     var nt = $(".nysClass").nysTables();
@@ -39,10 +41,11 @@ Javascript
     var nti = $("#nysID").nysTables({ "table": "users" });
 
   });
-
+```
 
 db.php -- Settings for database connection
 
+```
   <?php
 
     $db = new stdClass();
@@ -57,7 +60,7 @@ db.php -- Settings for database connection
     $db->driver = "sqlsrv";
 
   ?>
-
+```
 
 Options
 ---------
@@ -106,6 +109,7 @@ converts it into a DataTable formatted options object to be passed into ex: $("t
 #### jsonToSelect (data)
 Converts JSON formatted data into an HTML select dropdown formatter HTML string and returns it.
 
+```
   data = [{
     "text": "Option 1",
     "value": 1
@@ -113,6 +117,7 @@ Converts JSON formatted data into an HTML select dropdown formatter HTML string 
     "text": "Option 2",
     "value": 2
   }];
+```
 
 #### isOdd (number)
 Determines whether or not number is even or odd
