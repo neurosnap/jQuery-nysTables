@@ -21,6 +21,14 @@ th.nys-pk {
   text-align: center;
 }
 
+.nys-input {
+
+}
+
+.nys-input-text {
+  font-weight: bold;
+}
+
 #nys-mask {
   position: absolute;
   z-index: 9000;

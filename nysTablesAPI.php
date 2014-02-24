@@ -10,6 +10,7 @@
   if (!is_callable($action))
     die("No GET or POST 'action' key matches a function in the API, cannot proceed.");
 
+  //Object Relational Map for MSSQL, SQLSRV, and mySQL
   require("assets/php/orm.php");
   $orm = new ORM();
 
@@ -142,6 +143,7 @@
         //if ($col->name === $table_constraint->FK_column) {  
         $obj->FK = new stdClass();
         $obj->FK->table = $table_constraint->PK_table;
+        $obj->FK->PK = $table_constraint->PK_column;
         $obj->FK->delete_rule = $table_constraint->delete_rule;
         $obj->FK->update_rule = $table_constraint->update_rule;
         $obj->FK->data = $table_constraint->data;

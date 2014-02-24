@@ -20,7 +20,16 @@
 
       $(function() {
 
-        var nt = $(".nysClass").nysTables();
+        var nt = $(".nysClass").nysTables({
+          "columns": [{
+            "column": "user_ID",
+            "inputs": {
+              "fk": function(fk_info) {
+                return "sup bitches";
+              }
+            }
+          }]
+        });
 
         var nti = $("#nysID").nysTables({ 
           "table": "users", 

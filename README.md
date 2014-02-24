@@ -81,6 +81,20 @@ DataTable options object that can customize datatable that will be displayed
   *  visible (Bool default = true) -- Determines whether or not to display the column, true if column is not 
   nullable or default
   *  classes (String or Array of Strings) -- Will attempt to add CSS classes to column of data, useful for event handling. String is looking for space delimited, e.g. { classes: "class one two three" }.
+  *  inputs (Object) -- Same as global inputs only targets specific column
+
+#### inputs as Object
+This object gets checked against the column's data type and returns a string containing HTML 
+content for the input box or whatever content you want instead.  Defaults:
+  *  int -- text box
+  *  float -- text box
+  *  varchar -- text box
+  *  text -- textarea
+  *  bit - radio buttons
+  *  date - text box
+  *  datetime - text box
+  *  fk (function foreign_key_info Obj) -- Used as the default foreign key select dropdown as a function and returns the HTML for the FK column
+
 Callbacks
 ---------
 

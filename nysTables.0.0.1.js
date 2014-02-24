@@ -190,21 +190,81 @@
     if (column.value === null)
       value = "";
 
-    var title = toTitleCase(column.name) + ': ';
+    var title = '<span class="nys-input-text">' + toTitleCase(column.name) + '</span>: ';
+
+    if (column.PK)
+      return title + column.value;
 
     var condition = {
-      "int": '<input type="text" value="' + column.value + '" class="nys-input">',
-      "float": '<input type="text" value="' + column.value + '" class="nys-input">',
-      "varchar": '<input type="text" value="' + column.value + '" class="nys-input">',
-      "text": '<textarea class="nys-input">' + column.value + '</textarea>',
-      "bit": 'True <input type="radio" name="" value="1" class="nys-input" ' + ((column.value) ? "checked=checked" : "") + '> ' + 
-             'False <input type="radio" name="" value="0" class="nys-input" ' + ((!column.value) ? "checked=checked" : "") + '>',
-      "date": '<input type="" value="' + column.value + '" class="nys-input">',
-      "datetime": '<input type="" value="' + column.value + '" class="nys-input">'
+      "int": '<input type="text" value="' + (column.value || column.default) + '" class="nys-input">',
+      "float": '<input type="text" value="' + (column.value || column.default) + '" class="nys-input">',
+      "varchar": '<input type="text" value="' + (column.value || column.default) + '" class="nys-input">',
+      "text": '<textarea class="nys-input">' + (column.value || column.default) + '</textarea>',
+      "bit": 'True <input type="radio" name="" value="1" class="nys-input" ' + ((column.value === 1 || column.default === 1) ? "checked=checked" : "") + '> ' + 
+             'False <input type="radio" name="" value="0" class="nys-input" ' + ((column.value === 0 || column.default === 0) ? "checked=checked" : "") + '>',
+      "date": '<input type="" value="' + (column.value || column.default) + '" class="nys-input">',
+      "datetime": '<input type="" value="' + (column.value || column.default) + '" class="nys-input">',
+      "fk": function(foreign_key_info) {
+        console.log("HIT");
+        var content = '<select class="nys-input">';
+
+        for (var i = 0; i < foreign_key_info.data.length; i++) {
+
+          var fk_data = foreign_key_info.data[i];
+
+          content += '<option value="' + fk_data[foreign_key_info.PK] + '">';
+
+          //maximum number of columns to show as the select dropdown text
+          var max_cols_show = 3;
+          for (prop in fk_data) {
+            
+            if (max_cols_show === 0) 
+              break;
+
+            content += prop + ': ' + fk_data[prop] + ', ';
+
+            max_cols_show--;
+
+          }
+
+          content = content.substring(0, content.length - 2);
+          content += '</option>';
+
+        }
+
+        content += '</select>';
+
+        return content;
+
+      }
     };
 
+    $.extend(true, condition, scope.settings.inputs);
+
+    //import override from js settings
+    if (scope.settings.hasOwnProperty("columns")
+        && $.isArray(scope.settings.columns)
+        && scope.settings.columns.length > 0) {
+
+      for (var i = 0; i < scope.settings.columns.length; i++) {
+
+        if (scope.settings.columns[i].column === column.name) {
+          $.extend(true, condition, scope.settings.columns[i].inputs);
+          break;
+        }
+
+      }
+
+    }
+
     if (condition.hasOwnProperty(column.data_type)) {
+
+      if (column.FK) {
+        return title + condition.fk(column.FK);
+      }
+
       return title + condition[column.data_type];
+
     } else {
       return '<strong style="color: tomato;">Error with column (' + column.name + ') setup</strong>';
     }
@@ -320,22 +380,6 @@
     }
 
     return ret;
-
-  };
-
-  function jsonToSelect(data) {
-
-    if (typeof data !== "undefined" && data.length > 0) {
-
-      var content = '<option value=""> - Choose - </option>';
-
-      for (var i = 0; i < data.length; i++) {
-        content = content + '<option value="' + data[i].value + '">' + data[i].text + '</option>';
-      }
-
-      return content;
-
-    }
 
   };
 
