@@ -114,6 +114,9 @@ popup modal
 #### modalDisplay (scope, data)
 Injects record form data into popup modal with edit, delete options
 
+#### setMaskDimensions ()
+Sets the background mask dimensions to adjust for screen size changes
+
 #### getInputColumn (scope, columns)
 Returns string with input element for specified column and properties such as "required"
 

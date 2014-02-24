@@ -1,5 +1,5 @@
 <?php
-  
+
   header('Content-type: application/json');
 
   if (!array_key_exists("action", $_REQUEST))

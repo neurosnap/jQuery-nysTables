@@ -66,14 +66,7 @@
 
       $("body").append('<div id="nys-boxes"><div id="dialog" class="window"></div><div id="nys-mask"></div></div>');
 
-      //set mask to height and width of page
-      var mask_height = $(document).height();
-      var mask_width = $(window).width();
-
-      $("#nys-mask").css({
-        "height": mask_height,
-        "width": mask_width
-      });
+      setMaskDimensions();
 
     }
 
@@ -122,6 +115,8 @@
     $(scope).on("click", ".nys-manage a", function(e) {
 
       e.preventDefault();
+
+      setMaskDimensions();
 
       var nRow = $(this).parent().parent();
 
@@ -184,6 +179,19 @@
     return content;
 
   };
+
+  function setMaskDimensions() {
+
+    //set mask to height and width of page
+    var mask_height = $(document).height();
+    var mask_width = $(window).width();
+
+    $("#nys-mask").css({
+      "height": mask_height,
+      "width": mask_width
+    });
+
+  }
 
   function getInputColumn(scope, column) {
 
