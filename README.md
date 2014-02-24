@@ -78,8 +78,9 @@ DataTable options object that can customize datatable that will be displayed
 
 #### columns as Array of Objects
   *  column (String) -- Name of the column that nysTables searches to apply certain properties
-  *  visible (Bool default = true) -- Determines whether or not to display the column, true if column is not nullable or default
-
+  *  visible (Bool default = true) -- Determines whether or not to display the column, true if column is not 
+  nullable or default
+  *  classes (String or Array of Strings) -- Will attempt to add CSS classes to column of data, useful for event handling. String is looking for space delimited, e.g. { classes: "class one two three" }.
 Callbacks
 ---------
 

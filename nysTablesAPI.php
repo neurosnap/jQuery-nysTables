@@ -72,10 +72,8 @@
     }
 
     //echo $query;
-    $response->values = $orm->Qu($query, array(&$post['pk']), false);
-    $response->values = $response->values[0];
-
-    $response->columns = get_columns($orm, $post["table"]);
+    $values = $orm->Qu($query, array(&$post['pk']), false);
+    $values = $values[0];
 
     //get Foreign Key data
     $query = "SELECT 
@@ -101,19 +99,48 @@
                 FK.TABLE_NAME = (?)
                 OR PK.TABLE_NAME = (?)";
 
-    $response->constraints = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
+    $constraints = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
 
-    if (count($response->constraints) > 0) {
+    if (count($constraints) > 0) {
 
-      for ($i = 0; $i < count($response->constraints); $i++) {
+      for ($i = 0; $i < count($constraints); $i++) {
 
-        $response->constraints[$i]->FK_PK = get_pk($orm, $response->constraints[$i]->FK_table);
+        $constraints[$i]->FK_PK = get_pk($orm, $constraints[$i]->PK_table);
 
-        $query = "SELECT * FROM " . $response->constraints[$i]->FK_table;
-        $response->constraints[$i]->data = $orm->Qu($query, false, false);
+        $query = "SELECT * FROM " . $constraints[$i]->PK_table;
+        $constraints[$i]->data = $orm->Qu($query, false, false);
 
       }
   
+    }
+
+    $response->columns = get_columns($orm, $post["table"]);
+
+    $pk = get_pk($orm, $post["table"]);
+
+    foreach ($response->columns as $col) {
+
+      if ($col->name === $pk)
+        $col->PK = true;
+
+      foreach ($constraints as $table_constraint) {
+
+        if ($col->name !== $table_constraint->FK_column) 
+          continue;
+
+        //if ($col->name === $table_constraint->FK_column) {  
+        $col->FK = new stdClass();
+        $col->FK->table = $table_constraint->PK_table;
+        $col->FK->delete_rule = $table_constraint->delete_rule;
+        $col->FK->update_rule = $table_constraint->update_rule;
+        $col->FK->data = $table_constraint->data;
+        //}
+
+      }
+
+      if (property_exists($values, $col->name))
+        $col->value = $values->{$col->name};
+
     }
 
     echo json_encode($response);

@@ -12,6 +12,15 @@ th.nys-pk {
 	background-position: 25% 50%;
 }
 
+.nys-empty {
+  text-align: center;
+  color: tomato;
+}
+
+.nys-center {
+  text-align: center;
+}
+
 #nys-mask {
   position: absolute;
   z-index: 9000;

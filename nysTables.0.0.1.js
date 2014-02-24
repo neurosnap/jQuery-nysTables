@@ -106,15 +106,6 @@
           //combine settings and options
           $.extend(true, dt_settings, scope.settings.datatable);
 
-            //datatables callback to get row data after row has been created
-          dt_settings.fnCreatedRow = function(nRow, aData, iDataIndex) {
-            
-            //add class to datatables
-            $("td:eq(0)", nRow).html('<a href="#">Edit</a>');
-            $("td:eq(0)", nRow).addClass("nys-manage");
-
-          };
-
           //initialize datatables as well as combine options from nysTables object
           $(that).dataTable(dt_settings);
 
@@ -235,57 +226,103 @@
       "columns": [],
       "rows": []
     };
-    
-    var row_agg = '';
-    var first = true;
 
-    for (var i = 0; i < data.data.length; i++) {
+    if (data.data.length > 0) {
 
-      row_agg = 'Edit,';
+      var row_agg = '';
+      var first = true;
 
-      var obj = data.data[i];
+      for (var i = 0; i < data.data.length; i++) {
+          
+        row_agg = '<a href="#">Edit</a>,';
 
-      if (first) {
+        var obj = data.data[i];
 
-        //manage column
-        ret.columns.push({ "sTitle": "Manage" });
+        if (first) {
 
-        for (var prop in obj) {
+          var col = {};
 
-          var options = {};
+          if (i === 0) {
+            col = { "sTitle": "Manage", "sClass": "nys-manage" };
+          } else {
+            col = { "sTitle": "Manage" };
+          }
 
-          //Does data contain primary key property?
-          if (data.hasOwnProperty("PK")) {
-            
-            //found primary key? add a special class for it
-            if (prop == data.PK) {
-              options.sClass = "nys-pk";
+          ret.columns.push(col);
+
+          for (var prop in obj) {
+
+            var options = { "sClass": "" };
+
+            //Does data contain primary key property?
+            if (data.hasOwnProperty("PK")) {
+              
+              //found primary key? add a special class for it
+              if (prop == data.PK) {
+                options.sClass += "nys-pk ";
+              }
+
             }
+
+            //determine if configuration includes extra classes
+            //to add to the column
+            if (scope.settings.hasOwnProperty("columns")
+                && $.isArray(scope.settings.columns)
+                && scope.settings.columns.length > 0) {
+
+              for (var i = 0; i < scope.settings.columns.length; i++) {
+
+                var col_settings = scope.settings.columns[i];
+
+                if (prop === col_settings.column) {
+
+                  if (col_settings.hasOwnProperty("classes")) {
+
+                    if ($.isArray(col_settings.classes)) {
+                      options.sClass += col_settings.classes.join(" ");
+                    } else if (typeof col_settings.classes === "string") {
+                      options.sClass += col_settings.classes;
+                    }
+
+                  }
+
+                  break;
+
+                }
+
+              }
+
+            }
+
+            options.sTitle = toTitleCase(prop);
+
+            ret.columns.push(options);
 
           }
 
-          options.sTitle = toTitleCase(prop);
-
-          ret.columns.push(options);
+          first = false;
 
         }
 
-        first = false;
+        for (var prop in obj) {
 
-      }
-
-      for (var prop in obj) {
-
-        if (obj[prop] != null) {
-          row_agg = row_agg + obj[prop].toString().replace(/,/g, '') + ',';
-        } else {
-          row_agg += ",";
+          if (obj[prop] != null) {
+            row_agg = row_agg + obj[prop].toString().replace(/,/g, '') + ',';
+          } else {
+            row_agg += ",";
+          }
+          
         }
-        
+
+        row_agg = row_agg.slice(0, -1);
+        ret.rows.push(row_agg.split(","));
+
       }
 
-      row_agg = row_agg.slice(0, -1);
-      ret.rows.push(row_agg.split(","));
+    } else {
+
+      ret.columns.push({ "sTitle": "Empty", "sClass": "nys-empty" });
+      ret.rows.push(["No records were found in database table."]);
 
     }
 

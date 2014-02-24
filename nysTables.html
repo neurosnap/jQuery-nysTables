@@ -25,6 +25,9 @@
         var nti = $("#nysID").nysTables({ 
           "table": "users", 
           "columns": [{
+            "column": "created_at",
+            "classes": ["nys-center"]
+          }, {
             "column": "updated_at",
             "visible": false
           }, {
@@ -41,8 +44,8 @@
 
   <body>
 
-    <table class="nysClass" nys-table="users"></table>
-    <table class="nysClass" nys-table="errors"></table>
+    <table class="nysClass" nys-table="reason_codes"></table>
+    <table class="nysClass" nys-table="error_log"></table>
 
     <table id="nysID"></table>
 
