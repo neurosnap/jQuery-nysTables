@@ -193,7 +193,7 @@
     var title = '<span class="nys-input-text">' + toTitleCase(column.name) + '</span>: ';
 
     if (column.PK)
-      return title + column.value;
+      return title + column.value + '<input type="hidden" value="' + column.value + '" class="nys-input">';
 
     var condition = {
       "int": '<input type="text" value="' + (column.value || column.default) + '" class="nys-input">',
