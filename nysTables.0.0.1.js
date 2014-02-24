@@ -224,6 +224,34 @@
 
   };
 
+  function showFKModal(scope, table, pk) {
+
+    setMaskDimensions();
+
+    //transition effect   
+    $('#nys-mask').fadeTo("slow", 0.6); 
+
+    $.ajax({
+      "url": scope.settings.url,
+      "type": "POST",
+      "dataType": "json",
+      "data": {
+        "action": "get_fk_record",
+        "table": table,
+        "pk": pk,
+        "columns": JSON.stringify(scope.settings.columns)
+      },
+      "success": function(data, tet_status, jqr) {
+
+        $("#nys-boxes #dialog")
+          .fadeIn(600)
+          .html(data);
+
+      }
+    });
+
+  };
+
   function setMaskDimensions() {
 
     //set mask to height and width of page

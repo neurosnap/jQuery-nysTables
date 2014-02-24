@@ -130,6 +130,9 @@ popup modal
 #### editModalDisplay (scope, data)
 Injects record form data into popup modal with edit, delete options
 
+#### showFKModal (scope, table, pk)
+Displays modal for foreign key relationship data
+
 #### setMaskDimensions ()
 Sets the background mask dimensions to adjust for screen size changes
 
