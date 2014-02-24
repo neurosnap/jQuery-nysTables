@@ -123,11 +123,11 @@ Initializes event handlers for each item within the scope
 #### loadButtons (el, scope)
 Injects buttons into DOM within dataTables_wrapper class.
 
-#### modalLaunch (scope, table, pk)
+#### editModalLaunch (scope, table, pk)
 AJAX call to grab specific column data as well as key restraints, foreign key data and displays
 popup modal
 
-#### modalDisplay (scope, data)
+#### editModalDisplay (scope, data)
 Injects record form data into popup modal with edit, delete options
 
 #### setMaskDimensions ()

@@ -135,7 +135,7 @@
       var pk = nRow.find(".nys-pk").text();
 
       //launch modal
-      modalLaunch(scope, table, pk);
+      editModalLaunch(scope, table, pk);
 
     });
     
@@ -147,7 +147,7 @@
 
         var table = $(el).attr("nys-table") || scope.settings.table;
 
-        modalLaunch(scope, table, 0);
+        editModalLaunch(scope, table, 0);
 
       });
 
@@ -170,7 +170,7 @@
   };
 
   //Get data for modal edit popup modal
-  function modalLaunch(scope, table, pk) {
+  function editModalLaunch(scope, table, pk) {
 
     setMaskDimensions();
 
@@ -191,7 +191,7 @@
 
         $("#nys-boxes #dialog")
           .fadeIn(600)
-          .html(modalDisplay(scope, data));
+          .html(editModalDisplay(scope, data));
 
       }
     });
@@ -199,7 +199,7 @@
   };
 
   //Display modal edit popup
-  function modalDisplay(scope, data) {
+  function editModalDisplay(scope, data) {
 
     var content = '';
 
@@ -235,7 +235,7 @@
       "width": mask_width
     });
 
-  }
+  };
 
   function getInputColumn(scope, column) {
 
