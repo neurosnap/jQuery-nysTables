@@ -29,6 +29,18 @@ th.nys-pk {
   font-weight: bold;
 }
 
+.nys-delete {
+
+}
+
+.nys-save {
+
+}
+
+.nys-copy {
+  
+}
+
 #nys-mask {
   position: absolute;
   z-index: 9000;
@@ -41,7 +53,6 @@ th.nys-pk {
 #nys-boxes .window {
   position: fixed;
   width: 440px;
-  height: 200px;
   display: none;
   z-index: 9999;
   padding: 20px;
@@ -49,7 +60,6 @@ th.nys-pk {
 
 #nys-boxes #dialog {
   width: 50%; 
-  height: 25%;
   top: 15%;
   left: 25%;
   background-color: #fff;

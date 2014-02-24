@@ -160,7 +160,7 @@
     var content = '<div class="nys-buttons">';
 
     if (scope.settings.hasOwnProperty("new_records") || !scope.settings.new_records) {
-      content += '<a href="#" class="nys-add">ADD BUTTON</a>';
+      content += '<a href="#" class="nys-add">Add Record</a>';
     }
 
     content += '</div>';
@@ -203,9 +203,22 @@
 
     var content = '';
 
+    var allow_delete = scope.settings.allow_delete || true;
     for (var i = 0; i < data.length; i++) {
+
       content += getInputColumn(scope, data[i]) + ' <br />';
+
+      if (data[i].hasOwnProperty("FK") && (data[i].FK.delete_rule === "NO ACTION" || data[i].FK.delete_rule !== null))
+        allow_delete = false;
+
     }
+
+    content += '<hr />';
+
+    content += '<a href="#" class="nys-save">Save</a> <a href="#" class="nys-copy">Copy</a> ';
+
+    if (allow_delete)
+      content += '<a href="#" class="nys-delete">Delete</a> ';
 
     return content;
 

@@ -68,6 +68,13 @@ Options
 #### url as String
 URL pointing to server reference for AJAX call
 
+#### new_records as Boolean
+Determines whether or not new records can be added to the table
+
+#### allow_delete as Boolean
+If all foreign key relationships have a non-"NO ACTION" delete rule, then this flag will determine if a record
+can be deleted
+
 #### datatable as Object
 DataTable options object that can customize datatable that will be displayed
 
