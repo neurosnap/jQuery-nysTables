@@ -205,7 +205,7 @@
       "date": '<input type="" value="' + (column.value || column.default) + '" class="nys-input">',
       "datetime": '<input type="" value="' + (column.value || column.default) + '" class="nys-input">',
       "fk": function(foreign_key_info) {
-        console.log("HIT");
+
         var content = '<select class="nys-input">';
 
         for (var i = 0; i < foreign_key_info.data.length; i++) {
