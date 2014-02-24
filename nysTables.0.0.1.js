@@ -174,19 +174,11 @@
 
   //Display modal edit popup
   function modalDisplay(scope, data) {
-    console.log(data);
+
     var content = '';
 
-    for (var i = 0; i < data.columns.length; i++) {
-
-      //for (column in data.values) {
-
-       // if (data.columns[i].name === column) {
-          content += getInputColumn(scope, data.columns[i]) + ' <br />';
-       // }
-
-     // }
-
+    for (var i = 0; i < data.length; i++) {
+      content += getInputColumn(scope, data[i]) + ' <br />';
     }
 
     return content;
@@ -271,9 +263,9 @@
                 && $.isArray(scope.settings.columns)
                 && scope.settings.columns.length > 0) {
 
-              for (var i = 0; i < scope.settings.columns.length; i++) {
+              for (var f = 0; f < scope.settings.columns.length; f++) {
 
-                var col_settings = scope.settings.columns[i];
+                var col_settings = scope.settings.columns[f];
 
                 if (prop === col_settings.column) {
 

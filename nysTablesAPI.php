@@ -48,8 +48,6 @@
 
   function get_record($orm, $post) {
 
-    $response = new stdClass();
-
     $PK = get_pk($orm, $post["table"]);
 
     //default
@@ -114,32 +112,46 @@
   
     }
 
-    $response->columns = get_columns($orm, $post["table"]);
+    $columns = get_columns($orm, $post["table"]);
 
     $pk = get_pk($orm, $post["table"]);
 
-    foreach ($response->columns as $col) {
+    $response = array();
+    foreach ($values as $val_col => &$val) {
 
-      if ($col->name === $pk)
-        $col->PK = true;
+      foreach ($columns as &$col) {
 
-      foreach ($constraints as $table_constraint) {
+        if ($col->name === $val_col) {
+          $obj = clone $col;
+          break;
+        }
 
-        if ($col->name !== $table_constraint->FK_column) 
+      }
+
+      if (!isset($obj))
+        die("Error: record is returning data for a column that does not exist");
+
+      if ($val_col === $pk)
+          $obj->PK = true;
+
+      foreach ($constraints as &$table_constraint) {
+
+        if ($val_col !== $table_constraint->FK_column) 
           continue;
 
         //if ($col->name === $table_constraint->FK_column) {  
-        $col->FK = new stdClass();
-        $col->FK->table = $table_constraint->PK_table;
-        $col->FK->delete_rule = $table_constraint->delete_rule;
-        $col->FK->update_rule = $table_constraint->update_rule;
-        $col->FK->data = $table_constraint->data;
+        $obj->FK = new stdClass();
+        $obj->FK->table = $table_constraint->PK_table;
+        $obj->FK->delete_rule = $table_constraint->delete_rule;
+        $obj->FK->update_rule = $table_constraint->update_rule;
+        $obj->FK->data = $table_constraint->data;
         //}
 
       }
 
-      if (property_exists($values, $col->name))
-        $col->value = $values->{$col->name};
+      $obj->value = $val;
+
+      array_push($response, $obj);
 
     }
 
