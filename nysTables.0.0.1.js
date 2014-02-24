@@ -174,18 +174,18 @@
 
   //Display modal edit popup
   function modalDisplay(scope, data) {
-    
+    console.log(data);
     var content = '';
 
     for (var i = 0; i < data.columns.length; i++) {
 
-      for (column in data.values) {
+      //for (column in data.values) {
 
-        if (data.columns[i].name === column) {
-          content += getInputColumn(scope, data.columns[i], data.values[column]) + ' <br />';
-        }
+       // if (data.columns[i].name === column) {
+          content += getInputColumn(scope, data.columns[i]) + ' <br />';
+       // }
 
-      }
+     // }
 
     }
 
@@ -193,21 +193,22 @@
 
   };
 
-  function getInputColumn(scope, column, value) {
+  function getInputColumn(scope, column) {
 
-    if (value === null)
+    if (column.value === null)
       value = "";
 
     var title = toTitleCase(column.name) + ': ';
 
     var condition = {
-      "int": '<input type="text" value="' + value + '" class="nys-input">',
-      "float": '<input type="text" value="' + value + '" class="nys-input">',
-      "varchar": '<input type="text" value="' + value + '" class="nys-input">',
-      "text": '<textarea class="nys-input">' + value + '</textarea>',
-      "bit": 'True <input type="radio" name="" value="1" class="nys-input" ' + ((value) ? "checked=checked" : "") + '> False <input type="radio" name="" value="0" class="nys-input" ' + ((!value) ? "checked=checked" : "") + '>',
-      "date": '<input type="" value="' + value + '" class="nys-input">',
-      "datetime": '<input type="" value="' + value + '" class="nys-input">'
+      "int": '<input type="text" value="' + column.value + '" class="nys-input">',
+      "float": '<input type="text" value="' + column.value + '" class="nys-input">',
+      "varchar": '<input type="text" value="' + column.value + '" class="nys-input">',
+      "text": '<textarea class="nys-input">' + column.value + '</textarea>',
+      "bit": 'True <input type="radio" name="" value="1" class="nys-input" ' + ((column.value) ? "checked=checked" : "") + '> ' + 
+             'False <input type="radio" name="" value="0" class="nys-input" ' + ((!column.value) ? "checked=checked" : "") + '>',
+      "date": '<input type="" value="' + column.value + '" class="nys-input">',
+      "datetime": '<input type="" value="' + column.value + '" class="nys-input">'
     };
 
     if (condition.hasOwnProperty(column.data_type)) {
