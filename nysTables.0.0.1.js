@@ -42,7 +42,7 @@
     $.extend(true, this.settings, options);
 
     init(this);
-    listen(this);
+    listen_global(this);
 
     /*
     //public function
@@ -63,11 +63,7 @@
 
     //create modal dialog
     if ($("#nys-boxes").length == 0) {
-
       $("body").append('<div id="nys-boxes"><div id="dialog" class="window"></div><div id="nys-mask"></div></div>');
-
-      setMaskDimensions();
-
     }
 
     scope.each(function() {
@@ -102,6 +98,9 @@
           //initialize datatables as well as combine options from nysTables object
           $(that).dataTable(dt_settings);
 
+          loadButtons(that, scope);
+          listen(that, scope);
+
         }
       });
 
@@ -109,29 +108,9 @@
 
   };
 
-  //Master event handler function
-  function listen(scope) {
+  function listen_global(scope) {
 
-    $(scope).on("click", ".nys-manage a", function(e) {
-
-      e.preventDefault();
-
-      setMaskDimensions();
-
-      var nRow = $(this).parent().parent();
-
-      //transition effect   
-      $('#nys-mask').fadeTo("slow", 0.6); 
-
-      //get table name
-      var table = nRow.parent().parent().attr("nys-table") || scope.settings.table;
-      var pk = nRow.find(".nys-pk").text();
-
-      //launch modal
-      modalLaunch(scope, table, pk);
-
-    });
-
+    $("body").unbind("click");
     $("body").on("click", "#nys-mask", function(e) {
 
       e.preventDefault();
@@ -143,15 +122,67 @@
 
   };
 
+  //Master event handler function
+  function listen(el, scope) {
+
+    $(el).on("click", ".nys-manage a", function(e) {
+
+      e.preventDefault();
+
+      var nRow = $(this).parent().parent();
+      //get table name
+      var table = nRow.parent().parent().attr("nys-table") || scope.settings.table;
+      var pk = nRow.find(".nys-pk").text();
+
+      //launch modal
+      modalLaunch(scope, table, pk);
+
+    });
+    
+    if (scope.settings.hasOwnProperty("new_records") || !scope.settings.new_records) {
+
+      $(el).parent(".dataTables_wrapper").on("click", ".nys-add", function(e) {
+
+        e.preventDefault();
+
+        var table = $(el).attr("nys-table") || scope.settings.table;
+
+        modalLaunch(scope, table, 0);
+
+      });
+
+    }
+
+  };
+
+  function loadButtons(el, scope) {
+
+    var content = '<div class="nys-buttons">';
+
+    if (scope.settings.hasOwnProperty("new_records") || !scope.settings.new_records) {
+      content += '<a href="#" class="nys-add">ADD BUTTON</a>';
+    }
+
+    content += '</div>';
+
+    $(el).parent(".dataTables_wrapper").prepend(content);
+
+  };
+
   //Get data for modal edit popup modal
   function modalLaunch(scope, table, pk) {
+
+    setMaskDimensions();
+
+    //transition effect   
+    $('#nys-mask').fadeTo("slow", 0.6); 
 
     $.ajax({
       "url": scope.settings.url,
       "type": "POST",
       "dataType": "json",
       "data": {
-        "action": "get_record",
+        "action": ((pk === 0) ? "get_new_record" : "get_record"),
         "table": table,
         "pk": pk,
         "columns": JSON.stringify(scope.settings.columns)
@@ -196,12 +227,15 @@
   function getInputColumn(scope, column) {
 
     if (column.value === null)
-      value = "";
+      column.value = "";
+
+    if (column.default === null)
+      column.default = "";
 
     var title = '<span class="nys-input-text">' + toTitleCase(column.name) + '</span>: ';
 
     if (column.PK)
-      return title + column.value + '<input type="hidden" value="' + column.value + '" class="nys-input">';
+      return title + (column.value || "(Save First)") + '<input type="hidden" value="' + (column.value || 0) + '" class="nys-input">';
 
     var condition = {
       "int": '<input type="text" value="' + (column.value || column.default) + '" class="nys-input">',

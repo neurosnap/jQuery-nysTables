@@ -71,51 +71,14 @@
     }
 
     //echo $query;
-    $values = $orm->Qu($query, array(&$post['pk']), false);
+    $values = $orm->Qu($query, array(&$post["pk"]), false);
     $values = $values[0];
-
-    //get Foreign Key data
-    $query = "SELECT 
-                FK_table = FK.TABLE_NAME,
-                FK_column = CU.COLUMN_NAME,
-                PK_table = PK.TABLE_NAME,
-                PK_column = PT.COLUMN_NAME,
-                constraint_name = C.CONSTRAINT_NAME,
-                update_rule = C.UPDATE_RULE,
-                delete_rule = C.DELETE_RULE
-              FROM 
-                INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
-                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
-                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
-                INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
-                INNER JOIN (
-                  SELECT i1.TABLE_NAME, i2.COLUMN_NAME
-                  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
-                  INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
-                  WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
-                ) PT ON PT.TABLE_NAME = PK.TABLE_NAME
-              WHERE
-                FK.TABLE_NAME = (?)
-                OR PK.TABLE_NAME = (?)";
-
-    $constraints = $orm->Qu($query, array(&$post["table"], &$post["table"]), false);
-
-    if (count($constraints) > 0) {
-
-      for ($i = 0; $i < count($constraints); $i++) {
-
-        $constraints[$i]->FK_PK = get_pk($orm, $constraints[$i]->PK_table);
-
-        $query = "SELECT * FROM " . $constraints[$i]->PK_table;
-        $constraints[$i]->data = $orm->Qu($query, false, false);
-
-      }
-  
-    }
 
     $columns = get_columns($orm, $post["table"]);
 
     $pk = get_pk($orm, $post["table"]);
+
+    $constraints = get_constraints($orm, $post["table"]);
 
     $response = array();
     foreach ($values as $val_col => &$val) {
@@ -158,6 +121,105 @@
     }
 
     echo json_encode($response);
+
+  }
+
+  function get_new_record($orm, $post) {
+
+    $response = array();
+
+    $pk = get_pk($orm, $post["table"]);
+
+    $columns = get_columns($orm, $post["table"]);
+
+    //any columns that should not be grabbed?
+    if (array_key_exists("columns", $post)) {
+
+      $js_columns = json_decode($post["columns"], true);
+      $columns_display = explode(",", get_column_list(json_decode(json_encode($columns), true), $js_columns));
+
+    }
+
+    $constraints = get_constraints($orm, $post["table"]);
+
+    foreach ($columns as &$column) {
+
+      if (isset($columns_display) && !in_array($column->name, $columns_display))
+        continue;
+
+      $obj = new stdClass();
+      $obj = $column;
+
+      foreach ($constraints as &$table_constraint) {
+
+        if ($column->name === $table_constraint->FK_column) {
+
+          $obj->FK = new stdClass();
+          $obj->FK->table = $table_constraint->PK_table;
+          $obj->FK->PK = $table_constraint->PK_column;
+          $obj->FK->delete_rule = $table_constraint->delete_rule;
+          $obj->FK->update_rule = $table_constraint->update_rule;
+          $obj->FK->data = $table_constraint->data;
+
+          break;
+
+        }
+
+      }
+
+      if ($column->name === $pk)
+        $obj->PK = true;
+
+      array_push($response, $obj);
+
+    }
+
+    echo json_encode($response);
+
+  }
+
+  function get_constraints($orm, &$table) {
+
+    //get Foreign Key data
+    $query = "SELECT 
+                FK_table = FK.TABLE_NAME,
+                FK_column = CU.COLUMN_NAME,
+                PK_table = PK.TABLE_NAME,
+                PK_column = PT.COLUMN_NAME,
+                constraint_name = C.CONSTRAINT_NAME,
+                update_rule = C.UPDATE_RULE,
+                delete_rule = C.DELETE_RULE
+              FROM 
+                INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
+                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+                INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
+                INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+                INNER JOIN (
+                  SELECT i1.TABLE_NAME, i2.COLUMN_NAME
+                  FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+                  INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+                  WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY'
+                ) PT ON PT.TABLE_NAME = PK.TABLE_NAME
+              WHERE
+                FK.TABLE_NAME = (?)
+                OR PK.TABLE_NAME = (?)";
+
+    $constraints = $orm->Qu($query, array($table, $table), false);
+
+    if (count($constraints) > 0) {
+
+      for ($i = 0; $i < count($constraints); $i++) {
+
+        $constraints[$i]->FK_PK = get_pk($orm, $constraints[$i]->PK_table);
+
+        $query = "SELECT * FROM " . $constraints[$i]->PK_table;
+        $constraints[$i]->data = $orm->Qu($query, false, false);
+
+      }
+  
+    }
+
+    return $constraints;
 
   }
 

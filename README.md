@@ -107,6 +107,15 @@ Methods (Private)
 #### init (scope)
 Initializes nysTables and datatables after all the settings and options have been set up.
 
+#### listen_global (scope)
+Initializes global event handlers across all nysTables
+
+#### listen (scope)
+Initializes event handlers for each item within the scope
+
+#### loadButtons (el, scope)
+Injects buttons into DOM within dataTables_wrapper class.
+
 #### modalLaunch (scope, table, pk)
 AJAX call to grab specific column data as well as key restraints, foreign key data and displays
 popup modal
