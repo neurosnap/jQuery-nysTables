@@ -189,10 +189,18 @@
         "pk": pk,
         "columns": JSON.stringify(scope.settings.columns)
       },
-      "success": function(data, tet_status, jqr) {
+      "beforeSend": function() {
 
         $("#nys-boxes #dialog")
           .fadeIn(600)
+          .css("text-align", "center")
+          .html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+
+      },
+      "success": function(data, tet_status, jqr) {
+
+        $("#nys-boxes #dialog")
+          .css("text-align", "")
           .html(editModalDisplay(scope, data));
 
       }
@@ -243,6 +251,14 @@
         "value": pk_value,
         "columns": JSON.stringify(scope.settings.columns)
       },
+      "beforeSend": function() {
+
+        $("#nys-boxes #dialog")
+          .fadeIn(600)
+          .css("text-align", "center")
+          .html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+
+      },
       "success": function(data, tet_status, jqr) {
 
         var content = '';
@@ -258,6 +274,7 @@
 
         $("#nys-boxes #dialog")
           .fadeIn(600)
+          .css("text-align", "")
           .html(content);
 
       }
