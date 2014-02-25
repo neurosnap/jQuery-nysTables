@@ -154,7 +154,7 @@
 
     }
 
-    $constraints = get_constraints($orm, $post["table"], $find_fk_value);
+    $constraints = get_constraints($orm, $post["table"]);
 
     foreach ($columns as &$column) {
 
