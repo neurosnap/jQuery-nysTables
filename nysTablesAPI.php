@@ -43,7 +43,7 @@
 
     $response->PK = get_pk($orm, $post["table"]);
 
-    $response->FK = get_constraints($orm, $post["table"]);
+    $response->FK = get_constraints($orm, $post["table"], false);
 
     echo json_encode($response);
 
@@ -128,7 +128,13 @@
 
   function get_fk_record($orm, $post) {
 
+    $pk = get_pk($orm, $post["table"]);
 
+    $query = "SELECT * FROM " . $post["table"] . " WHERE " . $pk . " = ?";
+
+    $response = $orm->Qu($query, array(&$post["value"]), false);
+
+    echo json_encode($response[0]);
 
   }
 
@@ -148,7 +154,7 @@
 
     }
 
-    $constraints = get_constraints($orm, $post["table"]);
+    $constraints = get_constraints($orm, $post["table"], $find_fk_value);
 
     foreach ($columns as &$column) {
 
@@ -186,7 +192,9 @@
 
   }
 
-  function get_constraints($orm, &$table) {
+  function get_constraints($orm, &$table, $get_data = true) {
+
+    $PK = get_pk($orm, $table);
 
     //get Foreign Key data
     $query = "SELECT 
@@ -220,8 +228,13 @@
 
         $constraints[$i]->FK_PK = get_pk($orm, $constraints[$i]->PK_table);
 
-        $query = "SELECT * FROM " . $constraints[$i]->PK_table;
-        $constraints[$i]->data = $orm->Qu($query, false, false);
+        if ($get_data) {
+
+          $query = "SELECT * FROM " . $constraints[$i]->PK_table;
+
+          $constraints[$i]->data = $orm->Qu($query, false, false);
+
+        }
 
       }
   

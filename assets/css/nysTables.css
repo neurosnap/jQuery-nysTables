@@ -8,7 +8,7 @@
     -moz-opacity:0.45;
     filter:alpha(opacity=45);
     height:150px;
-    width:150px;
+    width:100px;
     z-index:10;
 }
 
