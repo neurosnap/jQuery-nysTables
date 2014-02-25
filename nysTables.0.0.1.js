@@ -39,8 +39,6 @@
       $("body").append('<div id="nys-boxes"><div id="dialog" class="window"></div><div id="nys-mask"></div></div>');
     }
 
-    //scope.each(function() {
-
     var that = scope;
 
     var table = ($(that).attr("nys-table") || scope.settings.table);
@@ -82,8 +80,6 @@
         
       }
     });
-
-    //});
 
   };
 
