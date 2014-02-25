@@ -1,8 +1,39 @@
 
+.nys-table {
+  text-align: center;
+}
+
+.nys-loading {
+    opacity:0.45;
+    -moz-opacity:0.45;
+    filter:alpha(opacity=45);
+    height:150px;
+    width:150px;
+    z-index:10;
+}
+
+.nys-table {
+  width: 100% !important;
+}
+
 th.nys-pk {
 	background-image: url('../img/key.png');
 	background-repeat: no-repeat;
 	background-position: 25% 50%;
+}
+
+.nys-pk {
+  text-align: center;
+}
+
+th.nys-fk {
+  background-image: url('../img/key_fk.png');
+  background-repeat: no-repeat;
+  background-position: 25% 50%; 
+}
+
+.nys-fk {
+  text-align: center;
 }
 
 .nys-manage {

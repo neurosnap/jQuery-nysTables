@@ -43,6 +43,8 @@
 
     $response->PK = get_pk($orm, $post["table"]);
 
+    $response->FK = get_constraints($orm, $post["table"]);
+
     echo json_encode($response);
 
   }
@@ -121,6 +123,12 @@
     }
 
     echo json_encode($response);
+
+  }
+
+  function get_fk_record($orm, $post) {
+
+
 
   }
 

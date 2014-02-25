@@ -1,28 +1,6 @@
 /* =======================================================================
  * nysTables.js v0.0.1
  * https://github.com/neurosnap/nysTables
- * Dependencies:  jQuery, 
- *                DataTables
- * Optional:      Select2, 
- *                JqueryUI Datepicker
- * =======================================================================
- * Copyright 2013 Eric Bower
- *
- *  This file is part of nysTables.
- * 
- *  nysTables is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  nysTables is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with nysTables.  If not, see <http://www.gnu.org/licenses/>.
- *
  * ======================================================================= */
 
 ;(function($, window, document, undefined) {
@@ -31,28 +9,23 @@
 
     var that = this;
 
+    $(that).addClass("nys-table");
+
     //default settings
     this.settings = {
-      //jQuery Element
-      "jquery": this,
       "url": "nysTablesAPI.php"
     };
 
     //combines settings and options "deeply"
     $.extend(true, this.settings, options);
 
-    init(this);
+    //init(this);
     listen_global(this);
 
-    /*
-    //public function
-    this.settings.getName = function() {
-
-      that.each(function() {
-        console.log("word");
-      });
-
-    };*/
+    this.each(function() {
+      this.settings = that.settings;
+      init(this);
+    });
 
     return this.settings;
 
@@ -66,45 +39,51 @@
       $("body").append('<div id="nys-boxes"><div id="dialog" class="window"></div><div id="nys-mask"></div></div>');
     }
 
-    scope.each(function() {
+    //scope.each(function() {
 
-      var that = this;
+    var that = scope;
 
-      var table = ($(this).attr("nys-table") || scope.settings.table);
+    var table = ($(that).attr("nys-table") || scope.settings.table);
 
-      $.ajax({
-        "url": scope.settings.url,
-        "type": "POST",
-        "dataType": "json",
-        "data": {
-          "action": "get_table",
-          "table": table,
-          "columns": JSON.stringify(scope.settings.columns)
-        },
-        "success": function(data, text_status, jqr) {
+    $.ajax({
+      "url": scope.settings.url,
+      "type": "POST",
+      "dataType": "json",
+      "data": {
+        "action": "get_table",
+        "table": table,
+        "columns": JSON.stringify(scope.settings.columns)
+      },
+      "beforeSend": function() {
+        $(that).html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+      },
+      "success": function(data, text_status, jqr) {
 
-          var json_to_dt = jsonToDataTable(scope, data);
-          
-          //defualt dt settings
-          var dt_settings = {
-            "bDestroy": true,
-            "aaData": json_to_dt.rows,
-            "aoColumns": json_to_dt.columns
-          };
+        $(that).find(".nys-loading").remove();
 
-          //combine settings and options
-          $.extend(true, dt_settings, scope.settings.datatable);
+        var json_to_dt = jsonToDataTable(scope, data);
+        
+        //defualt dt settings
+        var dt_settings = {
+          "bDestroy": true,
+          "aaData": json_to_dt.rows,
+          "aoColumns": json_to_dt.columns,
+          "bAutoWidth": false
+        };
 
-          //initialize datatables as well as combine options from nysTables object
-          $(that).dataTable(dt_settings);
+        //combine settings and options
+        $.extend(true, dt_settings, scope.settings.datatable);
 
-          loadButtons(that, scope);
-          listen(that, scope);
+        //initialize datatables as well as combine options from nysTables object
+        $(that).dataTable(dt_settings);
 
-        }
-      });
-
+        loadButtons(that, scope);
+        listen(that, scope);
+        
+      }
     });
+
+    //});
 
   };
 
@@ -123,9 +102,9 @@
   };
 
   //Master event handler function
-  function listen(el, scope) {
+  function listen(elem, scope) {
 
-    $(el).on("click", ".nys-manage a", function(e) {
+    $(elem).on("click", ".nys-manage a", function(e) {
 
       e.preventDefault();
 
@@ -139,13 +118,21 @@
 
     });
     
+    $(elem).parent(".dataTables_wrapper").on("click", ".nys-refresh", function(e) {
+
+      e.preventDefault();
+
+      init(elem);
+
+    });
+
     if (scope.settings.hasOwnProperty("new_records") || !scope.settings.new_records) {
 
-      $(el).parent(".dataTables_wrapper").on("click", ".nys-add", function(e) {
+      $(elem).parent(".dataTables_wrapper").on("click", ".nys-add", function(e) {
 
         e.preventDefault();
 
-        var table = $(el).attr("nys-table") || scope.settings.table;
+        var table = $(elem).attr("nys-table") || scope.settings.table;
 
         editModalLaunch(scope, table, 0);
 
@@ -155,17 +142,19 @@
 
   };
 
-  function loadButtons(el, scope) {
+  function loadButtons(elem, scope) {
 
     var content = '<div class="nys-buttons">';
 
     if (scope.settings.hasOwnProperty("new_records") || !scope.settings.new_records) {
-      content += '<a href="#" class="nys-add">Add Record</a>';
+      content += '<a href="#" class="nys-add">Add Record</a> ';
     }
+
+    content += '<a href="#" class="nys-refresh">Refresh</a>';
 
     content += '</div>';
 
-    $(el).parent(".dataTables_wrapper").prepend(content);
+    $(elem).parent(".dataTables_wrapper").prepend(content);
 
   };
 
@@ -394,8 +383,23 @@
             if (data.hasOwnProperty("PK")) {
               
               //found primary key? add a special class for it
-              if (prop == data.PK) {
+              if (prop === data.PK) {
                 options.sClass += "nys-pk ";
+              }
+
+            }
+
+            //Any foriegn keys?  Do special link behavior
+            if (data.hasOwnProperty("FK")) {
+
+              for (var j = 0; j < data.FK.length; j++) {
+
+                fk = data.FK[j];
+
+                if (prop === fk.FK_column) {
+                  options.sClass += "nys-fk";
+                }
+
               }
 
             }
@@ -443,10 +447,26 @@
         for (var prop in obj) {
 
           if (obj[prop] != null) {
-            row_agg = row_agg + obj[prop].toString().replace(/,/g, '') + ',';
-          } else {
+            row_agg += obj[prop].toString().replace(/,/g, '');
+          } /*else {
             row_agg += ",";
+          }*/
+
+          if (data.hasOwnProperty("FK")) {
+
+          for (var j = 0; j < data.FK.length; j++) {
+
+              fk = data.FK[j];
+
+              if (prop === fk.FK_column) {
+                row_agg += ' <a href="#" class="nys-fk-col">View</a>';
+              }
+
+            }
+
           }
+
+          row_agg += ',';
           
         }
 
