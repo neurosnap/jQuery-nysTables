@@ -281,8 +281,8 @@
   function setMaskDimensions() {
 
     //set mask to height and width of page
-    var mask_height = $(document).height();
-    var mask_width = $(window).width();
+    var mask_height = "100%"; //$(document).height();
+    var mask_width = "100%"; //$(window).width();
 
     $("#nys-mask").css({
       "height": mask_height,
