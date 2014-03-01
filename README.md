@@ -3,6 +3,8 @@ nysTables
 
 Front-end user interface to add, edit, and remove columns, data from a relational database
 
+[Demo](http://nysus.net/erb/nysTables/nysTables.html)
+
 Set-up
 ---------
 
