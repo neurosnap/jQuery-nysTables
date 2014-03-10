@@ -34,6 +34,7 @@ HTML
 ```
 
 Javascript
+Front end configuration
 
 ```
   $(function() {
@@ -45,7 +46,8 @@ Javascript
   });
 ```
 
-db.php -- Settings for database connection
+db.php
+Settings for database connection
 
 ```
   <?php
@@ -62,6 +64,48 @@ db.php -- Settings for database connection
     $db->driver = "sqlsrv";
 
   ?>
+```
+
+config.php
+This is where configuring the table, columns takes place.
+
+```
+<?php
+
+require_once("./nysTablesAPI.php");
+
+function users_config($_REQUEST, $orm) {
+
+    $config = new stdClass();
+
+    $config->table = "users";
+    $config->columns = array("ID", "name", "email", "info");
+
+    return $config;
+
+}
+
+function error_log_config($_REQUEST, $orm) {
+
+    $config = new stdClass();
+
+    $config->table = "error_log";
+
+    return $config;
+
+}
+
+function reason_codes_config($_REQUEST, $orm) {
+
+    $config = new stdClass();
+
+    $config->table = "reason_codes";
+
+    return $config;
+
+}
+
+?>
 ```
 
 Options
