@@ -17,7 +17,7 @@ How-To
 ---------
 
 nysTables gets initialized on a table tag.  
-The most basic configuration requires "table" tag or "nys-table" data attribute in the table tag.
+The most basic configuration requires "config" key or "nys-config" data attribute in the table tag.
 The nysTables object returns the settings object for nysTables.
 
 HTML
@@ -25,8 +25,8 @@ HTML
 ```
   <body>
 
-    <table class="nysClass" nys-table="users"></table>
-    <table class="nysClass" nys-table="errors"></table>
+    <table class="nysClass" nys-config="users"></table>
+    <table class="nysClass" nys-config="errors"></table>
 
     <table id="nysID"></table>
 
@@ -40,7 +40,7 @@ Javascript
 
     var nt = $(".nysClass").nysTables();
 
-    var nti = $("#nysID").nysTables({ "table": "users" });
+    var nti = $("#nysID").nysTables({ "config": "users_config" });
 
   });
 ```
@@ -80,15 +80,8 @@ can be deleted
 #### datatable as Object
 DataTable options object that can customize datatable that will be displayed
 
-#### fk as Array of Objects
-  *  table (String) -- Foreign key table that nysTables searches to apply certain properties
-  *  column (String) -- Column name in the foreign key table that will be used as the text
-                        for the select dropdown
-
 #### columns as Array of Objects
   *  column (String) -- Name of the column that nysTables searches to apply certain properties
-  *  visible (Bool default = true) -- Determines whether or not to display the column, true if column is not 
-  nullable or default
   *  classes (String or Array of Strings) -- Will attempt to add CSS classes to column of data, useful for event handling. String is looking for space delimited, e.g. { classes: "class one two three" }.
   *  inputs (Object) -- Same as global inputs only targets specific column
 
