@@ -5,56 +5,64 @@
   if (!array_key_exists("action", $_REQUEST))
     die("No GET or POST 'action' key found, cannot proceed.");
 
+  if (!array_key_exists("config", $_REQUEST))
+    die("No GET or POST 'config' key found, cannot proceed.");
+
   $action = $_REQUEST['action'];
 
   if (!is_callable($action))
     die("No GET or POST 'action' key matches a function in the API, cannot proceed.");
 
+  if (!is_callable($_REQUEST["config"]))
+    die("No GET or POST 'config' key matches a function in the API, cannot proceed.");
+
   //Object Relational Map for MSSQL, SQLSRV, and mySQL
   require("assets/php/orm.php");
   $orm = new ORM();
 
-  call_user_func($action, $orm, $_REQUEST);
+  $config = call_user_func($_REQUEST["config"], $_REQUEST, $orm);
 
-  function get_table($orm, $post) {
+  call_user_func($action, $orm, $_REQUEST, $config);
+
+  function get_table($orm, $post, $config) {
     
     $response = new stdClass();
 
     //default
-    $query = "SELECT * FROM " . $post["table"];
+    $query = "SELECT * FROM " . $config->table;
 
     //any columns that should not be grabbed?
-    if (array_key_exists("columns", $post)) {
+    /*if (array_key_exists("columns", $post)) {
 
       $js_cols = json_decode($post["columns"], true);
 
       if (gettype($js_cols) === "array" 
           && count($js_cols) > 0) {
 
-        $sql_columns = json_decode(json_encode(get_columns($orm, $post["table"])), true);
+        $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
 
-        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $post["table"];
+        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $config->table;
 
       }
 
-    }
+    }*/
 
     $response->data = $orm->Qu($query, false, false);
 
-    $response->PK = get_pk($orm, $post["table"]);
+    $response->PK = get_pk($orm, $config->table);
 
-    $response->FK = get_constraints($orm, $post["table"], false);
+    $response->FK = get_constraints($orm, $config->table, false);
 
     echo json_encode($response);
 
   }
 
-  function get_record($orm, $post) {
+  function get_record($orm, $post, $config) {
 
-    $PK = get_pk($orm, $post["table"]);
+    $PK = get_pk($orm, $config->table);
 
     //default
-    $query = "SELECT * FROM " . $post["table"] . " WHERE " . $PK . " = ?";
+    $query = "SELECT * FROM " . $config->table . " WHERE " . $PK . " = ?";
 
     //any columns that should not be grabbed?
     if (array_key_exists("columns", $post)) {
@@ -64,9 +72,9 @@
       if (gettype($js_cols) === "array" 
           && count($js_cols) > 0) {
 
-        $sql_columns = json_decode(json_encode(get_columns($orm, $post["table"])), true);
+        $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
 
-        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $post["table"] . " WHERE " . $PK . " = ?";
+        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $config->table . " WHERE " . $PK . " = ?";
 
       }
 
@@ -76,11 +84,11 @@
     $values = $orm->Qu($query, array(&$post["pk"]), false);
     $values = $values[0];
 
-    $columns = get_columns($orm, $post["table"]);
+    $columns = get_columns($orm, $config->table);
 
-    $pk = get_pk($orm, $post["table"]);
+    $pk = get_pk($orm, $config->table);
 
-    $constraints = get_constraints($orm, $post["table"]);
+    $constraints = get_constraints($orm, $config->table);
 
     $response = array();
     foreach ($values as $val_col => &$val) {
@@ -126,11 +134,11 @@
 
   }
 
-  function get_fk_record($orm, $post) {
+  function get_fk_record($orm, $post, $config) {
 
-    $pk = get_pk($orm, $post["table"]);
+    $pk = get_pk($orm, $config->table);
 
-    $query = "SELECT * FROM " . $post["table"] . " WHERE " . $pk . " = ?";
+    $query = "SELECT * FROM " . $config->table . " WHERE " . $pk . " = ?";
 
     $response = $orm->Qu($query, array(&$post["value"]), false);
 
@@ -138,13 +146,13 @@
 
   }
 
-  function get_new_record($orm, $post) {
+  function get_new_record($orm, $post, $config) {
 
     $response = array();
 
-    $pk = get_pk($orm, $post["table"]);
+    $pk = get_pk($orm, $config->table);
 
-    $columns = get_columns($orm, $post["table"]);
+    $columns = get_columns($orm, $config->table);
 
     //any columns that should not be grabbed?
     if (array_key_exists("columns", $post)) {
@@ -154,7 +162,7 @@
 
     }
 
-    $constraints = get_constraints($orm, $post["table"]);
+    $constraints = get_constraints($orm, $config->table);
 
     foreach ($columns as &$column) {
 

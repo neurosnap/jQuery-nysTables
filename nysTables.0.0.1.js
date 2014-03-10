@@ -9,11 +9,11 @@
 
     var that = this;
 
-    $(that).addClass("nys-table");
+    $(that).addClass("nys-config");
 
     //default settings
     this.settings = {
-      "url": "nysTablesAPI.php"
+      "url": "config.php"
     };
 
     //combines settings and options "deeply"
@@ -41,7 +41,7 @@
 
     var that = scope;
 
-    var table = ($(that).attr("nys-table") || scope.settings.table);
+    var config = ($(that).attr("nys-config") || scope.settings.config);
 
     $.ajax({
       "url": scope.settings.url,
@@ -49,7 +49,7 @@
       "dataType": "json",
       "data": {
         "action": "get_table",
-        "table": table,
+        "config": config,
         "columns": JSON.stringify(scope.settings.columns)
       },
       "beforeSend": function() {
@@ -106,11 +106,11 @@
 
       var nRow = $(this).parent().parent();
       //get table name
-      var table = nRow.parent().parent().attr("nys-table") || scope.settings.table;
+      var config = nRow.parent().parent().attr("nys-config") || scope.settings.config;
       var pk = nRow.find(".nys-pk").text();
 
       //launch modal
-      editModalLaunch(scope, table, pk);
+      editModalLaunch(scope, config, pk);
 
     });
     
@@ -128,7 +128,7 @@
 
       var nRow = $(this).parent().parent();
       //get table name
-      var table = $(this).attr("pk_table"); //nRow.parent().parent().attr("nys-table") || scope.settings.table;
+      var table = $(this).attr("pk_table");
       var pk_value = $(this).attr("pk_value");
 
       showFKModal(scope, table, pk_value);
@@ -141,9 +141,9 @@
 
         e.preventDefault();
 
-        var table = $(elem).attr("nys-table") || scope.settings.table;
+        var config = $(elem).attr("nys-config") || scope.settings.config;
 
-        editModalLaunch(scope, table, 0);
+        editModalLaunch(scope, config, 0);
 
       });
 
@@ -168,7 +168,7 @@
   };
 
   //Get data for modal edit popup modal
-  function editModalLaunch(scope, table, pk) {
+  function editModalLaunch(scope, config, pk) {
 
     setMaskDimensions();
 
@@ -181,7 +181,7 @@
       "dataType": "json",
       "data": {
         "action": ((pk === 0) ? "get_new_record" : "get_record"),
-        "table": table,
+        "config": config,
         "pk": pk,
         "columns": JSON.stringify(scope.settings.columns)
       },
