@@ -120,11 +120,11 @@
 
   }
 
-  function get_fk_record($orm, $post, $config) {
+  function get_fk_record($orm, $post, $table) {
 
-    $pk = get_pk($orm, $config->table);
+    $pk = get_pk($orm, $post['table']);
 
-    $query = "SELECT * FROM " . $config->table . " WHERE " . $pk . " = ?";
+    $query = "SELECT * FROM " . $post['table'] . " WHERE " . $pk . " = ?";
 
     $response = $orm->Qu($query, array(&$post["value"]), false);
 

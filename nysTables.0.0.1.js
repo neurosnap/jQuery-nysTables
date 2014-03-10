@@ -127,11 +127,12 @@
       e.preventDefault();
 
       var nRow = $(this).parent().parent();
+      var config = nRow.parent().parent().attr("nys-config") || scope.settings.config;
       //get table name
       var table = $(this).attr("pk_table");
       var pk_value = $(this).attr("pk_value");
 
-      showFKModal(scope, table, pk_value);
+      showFKModal(scope, table, pk_value, config);
 
     });
 
@@ -229,7 +230,7 @@
 
   };
 
-  function showFKModal(scope, table, pk_value) {
+  function showFKModal(scope, table, pk_value, config) {
 
     setMaskDimensions();
 
@@ -242,6 +243,7 @@
       "dataType": "json",
       "data": {
         "action": "get_fk_record",
+        "config": config,
         "table": table,
         "value": pk_value
       },
