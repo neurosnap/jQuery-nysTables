@@ -32,20 +32,13 @@
     $query = "SELECT * FROM " . $config->table;
 
     //any columns that should not be grabbed?
-    /*if (array_key_exists("columns", $post)) {
-
-      $js_cols = json_decode($post["columns"], true);
-
-      if (gettype($js_cols) === "array" 
-          && count($js_cols) > 0) {
+    if (property_exists($config, "columns")) {
 
         $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
 
-        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $config->table;
+        $query = " SELECT " . get_column_list($sql_columns, $config->columns) . " FROM " . $config->table;
 
-      }
-
-    }*/
+    }
 
     $response->data = $orm->Qu($query, false, false);
 
@@ -65,18 +58,11 @@
     $query = "SELECT * FROM " . $config->table . " WHERE " . $PK . " = ?";
 
     //any columns that should not be grabbed?
-    if (array_key_exists("columns", $post)) {
-
-      $js_cols = json_decode($post["columns"], true);
-
-      if (gettype($js_cols) === "array" 
-          && count($js_cols) > 0) {
+    if (property_exists($config, "columns")) {
 
         $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
 
-        $query = " SELECT " . get_column_list($sql_columns, $js_cols) . " FROM " . $config->table . " WHERE " . $PK . " = ?";
-
-      }
+        $query = " SELECT " . get_column_list($sql_columns, $config->columns) . " FROM " . $config->table . " WHERE " . $PK . " = ?";
 
     }
 
@@ -155,10 +141,9 @@
     $columns = get_columns($orm, $config->table);
 
     //any columns that should not be grabbed?
-    if (array_key_exists("columns", $post)) {
+    if (property_exists($config, "columns")) {
 
-      $js_columns = json_decode($post["columns"], true);
-      $columns_display = explode(",", get_column_list(json_decode(json_encode($columns), true), $js_columns));
+      $columns_display = explode(",", get_column_list(json_decode(json_encode($columns), true), $config->columns));
 
     }
 
@@ -297,7 +282,7 @@
   }
 
   //string of comma delimited columns to grab from SQL table
-  function get_column_list($sql_columns, $js_columns) {
+  function get_column_list($sql_columns, $config_columns) {
 
     $list = array();
 
@@ -308,35 +293,30 @@
       $add_column = false;
 
       //list js columns from nysTables settings
-      foreach ($js_columns as $js_col) {
+      if (in_array($sql_col["name"], $config_columns)) {
+      //foreach ($config_columns as $config_col) {
 
         //found a match
-        if ($js_col["column"] == $sql_col["name"]) {
+        //if ($config_col == $sql_col["name"]) {
 
           $found_column = true;
 
-          if ($sql_col["is_nullable"] === "YES" || !is_null($sql_col["default"])) {
-          
-            if (array_key_exists("visible", $js_col)) {
-
-              if ($js_col["visible"]) {
-                $add_column = true;
-              }
-
-            } else {
-              $add_column = true;
-            }
-
-          } else {
+          //if ($sql_col["is_nullable"] === "NO" && is_null($sql_col["default"])) {
             $add_column = true;
-          }
+          //}
 
-        }
+        //}
 
       }
 
       if (!$found_column) {
-        $add_column = true;
+
+        if ($sql_col["is_nullable"] === "NO" && is_null($sql_col["default"])) {
+            $add_column = true;
+        } else {
+            $add_column = false;
+        }
+        
       }
 
       //add column, duh!

@@ -25,8 +25,8 @@ HTML
 ```
   <body>
 
-    <table class="nysClass" nys-config="users"></table>
-    <table class="nysClass" nys-config="errors"></table>
+    <table class="nysClass" nys-config="users_config"></table>
+    <table class="nysClass" nys-config="error_config"></table>
 
     <table id="nysID"></table>
 

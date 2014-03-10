@@ -182,8 +182,7 @@
       "data": {
         "action": ((pk === 0) ? "get_new_record" : "get_record"),
         "config": config,
-        "pk": pk,
-        "columns": JSON.stringify(scope.settings.columns)
+        "pk": pk
       },
       "beforeSend": function() {
 
@@ -244,8 +243,7 @@
       "data": {
         "action": "get_fk_record",
         "table": table,
-        "value": pk_value,
-        "columns": JSON.stringify(scope.settings.columns)
+        "value": pk_value
       },
       "beforeSend": function() {
 
