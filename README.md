@@ -71,7 +71,7 @@ HTML
 </body>
 ```
 
-nysTables Server Configuration: (./src/php/config.php)
+nysTables Server Configuration: (./src/php/basic_config.php)
 Configure the table name and columns you want to view here that 
 are checked in SQL.
 
