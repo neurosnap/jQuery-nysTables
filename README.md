@@ -1,7 +1,9 @@
-nysTables
+jQuery-nysTables
 =========
 
 Front-end user interface to add, edit, and remove columns, data from a relational database.
+
+It currently supports SQL Server and has server scripting written in PHP.
 
 [Demo](http://nysus.net/erb/nysTables/nysTables.html)
 
@@ -49,11 +51,11 @@ HTML
 ```
 <head>
   <link href="assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-  <link href="assets/css/nysTables.css" rel="stylesheet" type="text/css" />
+  <link href="assets/css/jquery.nysTables.css" rel="stylesheet" type="text/css" />
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="assets/js/jquery.dataTables.min.js"></script>
-  <script src="nysTables.0.0.1.js"></script>
+  <script src="jquery.nysTables.0.0.1.js"></script>
 
   <script>
     $(function() {

@@ -90,14 +90,12 @@
         if ($val_col !== $table_constraint->FK_column) 
           continue;
 
-        //if ($col->name === $table_constraint->FK_column) {  
         $obj->FK = new stdClass();
         $obj->FK->table = $table_constraint->PK_table;
         $obj->FK->PK = $table_constraint->PK_column;
         $obj->FK->delete_rule = $table_constraint->delete_rule;
         $obj->FK->update_rule = $table_constraint->update_rule;
         $obj->FK->data = $table_constraint->data;
-        //}
 
       }
 
@@ -293,8 +291,7 @@
       } else {
 
         if ($sql_col["is_nullable"] === "NO" 
-            && is_null($sql_col["default"])
-            && (!array_key_exists("PK", $sql_col) || !$sql_col["PK"])) {
+            && is_null($sql_col["default"])) {
             $add_column = true;
         }
 

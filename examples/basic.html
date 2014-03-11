@@ -3,31 +3,35 @@
 
   <head>
 
+    <title>nysTables Basic Configuration</title>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="author" content="Eric Bower" />
     <meta name="description" content="Front-end user interface to add, edit, and remove columns, data from a relational database" />
-    <meta name="application-name" content="nysTables 0.0.1" />
+    <meta name="application-name" content="jQuery-nysTables 0.0.1" />
 
-    <link href="assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/nysTables.css" rel="stylesheet" type="text/css" />
+    <link href="../src/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+    <link href="../src/css/jquery.nysTables.css" rel="stylesheet" type="text/css" />
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="../src/js/jquery.dataTables.min.js"></script>
 
-    <script src="nysTables.0.0.1.js"></script>
+    <script src="../src/js/jquery.nysTables.0.0.1.js"></script>
     
     <script>
 
       $(function() {
 
+        var url = "../src/php/config.php";
+
         var nt = $(".nysClass").nysTables({
-          "url": "config.php"
+          "url": url
         });
 
         var nti = $("#nysID").nysTables({ 
-          "url": "config.php",
+          "url": url,
           "config": "users_config", 
-          "columns": [{ "name": "name", "classes": "nys-center" }]
+          "columns": [{ "name": "name", "classes": "nys-center", "show_pk": false }]
         });
 
       });

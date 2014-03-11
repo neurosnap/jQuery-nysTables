@@ -13,7 +13,8 @@
 
         //default settings
         this.settings = {
-            "url": "config.php"
+            "url": "config.php",
+            "loading": "../src/img/loading.gif"
         };
 
         //combines settings and options "deeply"
@@ -51,7 +52,7 @@
                 "columns": JSON.stringify(scope.settings.columns)
             },
             "beforeSend": function() {
-                $(that).html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+                $(that).html('<img src="' + scope.settings.loading + '" class="nys-loading" />');
             },
             "success": function(data, text_status, jqr) {
 
@@ -169,23 +170,27 @@
         setMaskDimensions();
 
         //transition effect   
-        $('#nys-mask').fadeTo("fast", 0.6); 
+        $('#nys-mask').fadeTo("fast", 0.6);
+
+        var params = {
+            "action": ((pk === 0) ? "get_new_record" : "get_record"),
+            "config": config
+        };
+
+        if (pk !== "")
+            params.pk = pk;
 
         $.ajax({
             "url": scope.settings.url,
             "type": "POST",
             "dataType": "json",
-            "data": {
-                "action": ((pk === 0) ? "get_new_record" : "get_record"),
-                "config": config,
-                "pk": pk
-            },
+            "data": params,
             "beforeSend": function() {
 
                 $("#nys-boxes #dialog")
                     .fadeIn(600)
                     .css("text-align", "center")
-                    .html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+                    .html('<img src="' + scope.settings.loading + '" class="nys-loading" />');
 
             },
             "success": function(data, tet_status, jqr) {
@@ -245,7 +250,7 @@
                 $("#nys-boxes #dialog")
                     .fadeIn(600)
                     .css("text-align", "center")
-                    .html('<img src="./assets/img/loading.gif" class="nys-loading" />');
+                    .html('<img src="' + scope.settings.loading + '" class="nys-loading" />');
 
             },
             "success": function(data, tet_status, jqr) {
