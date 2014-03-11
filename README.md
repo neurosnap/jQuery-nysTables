@@ -15,8 +15,8 @@ Dependencies:
   * jQuery (http://jquery.com/)
   * Datatables (https://datatables.net/)
 
-Required database configuration file: (./src/php/db.php), 
-links with custom ORM (./orm.php)
+Required database configuration file: (./src/php/db.php),
+links with custom ORM: (./src/php/orm.php)
 
 ```
 <?php
@@ -53,13 +53,13 @@ HTML
   <link href="assets/css/jquery.nysTables.css" rel="stylesheet" type="text/css" />
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="assets/js/jquery.dataTables.min.js"></script>
-  <script src="jquery.nysTables.0.0.1.js"></script>
+  <script src="./src/js/jquery.dataTables.min.js"></script>
+  <script src="./src/js/jquery.nysTables.0.0.1.js"></script>
 
   <script>
     $(function() {
       $("#nysID").nysTables({ 
-        "url": "config.php",
+        "url": "./src/php/config.php",
         "config": "users_config" 
       });
     });
@@ -168,19 +168,6 @@ Returns string with input element for specified column and properties such as "r
 #### jsonToDataTable (scope, data)
 Converts JSON formatted response data from the server and 
 converts it into a DataTable formatted options object to be passed into ex: $("table").dataTable(jsonToDataTable(scope, data));
-
-#### jsonToSelect (data)
-Converts JSON formatted data into an HTML select dropdown formatter HTML string and returns it.
-
-```
-  data = [{
-    "text": "Option 1",
-    "value": 1
-  }, {
-    "text": "Option 2",
-    "value": 2
-  }];
-```
 
 #### isOdd (number)
 Determines whether or not number is even or odd
