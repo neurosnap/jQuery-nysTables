@@ -6,7 +6,7 @@ function users_config() {
 
     $config = new stdClass();
     $config->table = "users";
-    $config->columns = array("ID", "name", "email", "info");
+    $config->columns = array("name", "email", "info");
     return $config;
 
 }

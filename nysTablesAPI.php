@@ -65,7 +65,6 @@
     $values = $values[0];
 
     $columns = get_columns($orm, $config->table);
-    $pk = get_pk($orm, $config->table);
     $constraints = get_constraints($orm, $config->table);
 
     $response = array();
@@ -83,7 +82,7 @@
       if (!isset($obj))
         die("Error: record is returning data for a column that does not exist");
 
-      if ($val_col === $pk)
+      if ($val_col === $PK)
           $obj->PK = true;
 
       foreach ($constraints as &$table_constraint) {
@@ -127,7 +126,6 @@
 
     $response = array();
 
-    $pk = get_pk($orm, $config->table);
     $columns = get_columns($orm, $config->table);
 
     //any columns that should not be grabbed?
@@ -161,9 +159,6 @@
         }
 
       }
-
-      if ($column->name === $pk)
-        $obj->PK = true;
 
       array_push($response, $obj);
 
@@ -260,8 +255,22 @@
 
     $columns = $orm->Qu($query, array(&$table), false);
 
+    $PK = get_pk($orm, $table);
+
     if (count($columns) > 0) {
+
+      //set PK
+      for ($i = 0; $i < count($columns); $i++) {
+
+        if ($columns[$i]->name !== $PK) 
+          continue;
+
+        $columns[$i]->PK = true;
+
+      }
+
       return $columns;
+
     } else {
       return false;
     }
@@ -276,23 +285,19 @@
     //list sql columns for table
     foreach ($sql_columns as $sql_col) {
 
-      $found_column = false;
       $add_column = false;
 
       //list js columns from nysTables settings
       if (in_array($sql_col["name"], $config_columns)) {
-          $found_column = true;
           $add_column = true;
-      }
+      } else {
 
-      if (!$found_column) {
-
-        if ($sql_col["is_nullable"] === "NO" && is_null($sql_col["default"])) {
+        if ($sql_col["is_nullable"] === "NO" 
+            && is_null($sql_col["default"])
+            && (!array_key_exists("PK", $sql_col) || !$sql_col["PK"])) {
             $add_column = true;
-        } else {
-            $add_column = false;
         }
-        
+
       }
 
       //add column, duh!
