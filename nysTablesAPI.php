@@ -21,29 +21,24 @@
   $orm = new ORM();
 
   $config = call_user_func($_REQUEST["config"], $_REQUEST, $orm);
-
   call_user_func($action, $orm, $_REQUEST, $config);
 
   function get_table($orm, $post, $config) {
     
     $response = new stdClass();
 
-    //default
     $query = "SELECT * FROM " . $config->table;
 
     //any columns that should not be grabbed?
     if (property_exists($config, "columns")) {
 
         $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
-
         $query = " SELECT " . get_column_list($sql_columns, $config->columns) . " FROM " . $config->table;
 
     }
 
     $response->data = $orm->Qu($query, false, false);
-
     $response->PK = get_pk($orm, $config->table);
-
     $response->FK = get_constraints($orm, $config->table, false);
 
     echo json_encode($response);
@@ -61,7 +56,6 @@
     if (property_exists($config, "columns")) {
 
         $sql_columns = json_decode(json_encode(get_columns($orm, $config->table)), true);
-
         $query = " SELECT " . get_column_list($sql_columns, $config->columns) . " FROM " . $config->table . " WHERE " . $PK . " = ?";
 
     }
@@ -71,9 +65,7 @@
     $values = $values[0];
 
     $columns = get_columns($orm, $config->table);
-
     $pk = get_pk($orm, $config->table);
-
     $constraints = get_constraints($orm, $config->table);
 
     $response = array();
@@ -123,7 +115,6 @@
   function get_fk_record($orm, $post, $table) {
 
     $pk = get_pk($orm, $post['table']);
-
     $query = "SELECT * FROM " . $post['table'] . " WHERE " . $pk . " = ?";
 
     $response = $orm->Qu($query, array(&$post["value"]), false);
@@ -137,14 +128,11 @@
     $response = array();
 
     $pk = get_pk($orm, $config->table);
-
     $columns = get_columns($orm, $config->table);
 
     //any columns that should not be grabbed?
     if (property_exists($config, "columns")) {
-
       $columns_display = explode(",", get_column_list(json_decode(json_encode($columns), true), $config->columns));
-
     }
 
     $constraints = get_constraints($orm, $config->table);
@@ -224,7 +212,6 @@
         if ($get_data) {
 
           $query = "SELECT * FROM " . $constraints[$i]->PK_table;
-
           $constraints[$i]->data = $orm->Qu($query, false, false);
 
         }
@@ -294,19 +281,8 @@
 
       //list js columns from nysTables settings
       if (in_array($sql_col["name"], $config_columns)) {
-      //foreach ($config_columns as $config_col) {
-
-        //found a match
-        //if ($config_col == $sql_col["name"]) {
-
           $found_column = true;
-
-          //if ($sql_col["is_nullable"] === "NO" && is_null($sql_col["default"])) {
-            $add_column = true;
-          //}
-
-        //}
-
+          $add_column = true;
       }
 
       if (!$found_column) {
