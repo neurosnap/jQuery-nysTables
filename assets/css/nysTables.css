@@ -1,6 +1,6 @@
 
 .nys-table {
-  text-align: center;
+  width: 100%;
 }
 
 .nys-loading {
@@ -12,8 +12,8 @@
     z-index:10;
 }
 
-.nys-table {
-  width: 100% !important;
+.nys-pk {
+  text-align: center;
 }
 
 th.nys-pk {
@@ -22,7 +22,7 @@ th.nys-pk {
 	background-position: 25% 50%;
 }
 
-.nys-pk {
+.nys-fk {
   text-align: center;
 }
 
@@ -30,10 +30,6 @@ th.nys-fk {
   background-image: url('../img/key_fk.png');
   background-repeat: no-repeat;
   background-position: 25% 50%; 
-}
-
-.nys-fk {
-  text-align: center;
 }
 
 .nys-manage {
@@ -52,25 +48,14 @@ th.nys-fk {
   text-align: center;
 }
 
-.nys-input {
-
-}
-
+.nys-input {}
 .nys-input-text {
   font-weight: bold;
 }
 
-.nys-delete {
-
-}
-
-.nys-save {
-
-}
-
-.nys-copy {
-  
-}
+.nys-delete {}
+.nys-save {}
+.nys-copy {}
 
 #nys-mask {
   position: absolute;
