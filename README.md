@@ -13,7 +13,7 @@ Dependencies:
   * jQuery (http://jquery.com/)
   * Datatables (https://datatables.net/)
 
-How-To
+How-To -- Basic Configuration
 ---------
 
 nysTables gets initialized on a table tag.  
@@ -23,50 +23,49 @@ The nysTables object returns the settings object for nysTables.
 HTML
 
 ```
-  <body>
-
-    <table class="nysClass" nys-config="users_config"></table>
-    <table class="nysClass" nys-config="error_config"></table>
-
-    <table id="nysID"></table>
-
-  </body>
+<head>
+  <link href="assets/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+  <link href="assets/css/nysTables.css" rel="stylesheet" type="text/css" />
+  
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="nysTables.0.0.1.js"></script>
+</head>
+<body>
+  <table id="nysID"></table>
+</body>
 ```
 
 Javascript
 Front end configuration
 
 ```
-  $(function() {
-
-    var nt = $(".nysClass").nysTables();
-    // or
-    var nti = $("#nysID").nysTables({ "config": "users_config" });
-
-  });
+$(function() {
+  var nti = $("#nysID").nysTables({ "config": "users_config" });
+});
 ```
 
-./assets/php/db.php
+./db.php
 Settings for database connection
 
 ```
 <?php
 
-  $db = new stdClass();
+$db = new stdClass();
 
-  //Server address
-  $db->server = "";
-  //Database name
-  $db->dba = "";
-  $db->user = "";
-  $db->pass = "";
-  //e.g. sqlsrv, mssql, or mysql
-  $db->driver = "sqlsrv";
+//Server address
+$db->server = "";
+//Database name
+$db->dba = "";
+$db->user = "";
+$db->pass = "";
+//e.g. sqlsrv, mssql, or mysql
+$db->driver = "sqlsrv";
 
 ?>
 ```
 
-config.php
+./config.php
 This is where configuring the table, columns takes place.
 
 ```
@@ -80,26 +79,6 @@ function users_config($_REQUEST, $orm) {
 
     $config->table = "users";
     $config->columns = array("ID", "name", "email", "info");
-
-    return $config;
-
-}
-
-function error_log_config($_REQUEST, $orm) {
-
-    $config = new stdClass();
-
-    $config->table = "error_log";
-
-    return $config;
-
-}
-
-function reason_codes_config($_REQUEST, $orm) {
-
-    $config = new stdClass();
-
-    $config->table = "reason_codes";
 
     return $config;
 
