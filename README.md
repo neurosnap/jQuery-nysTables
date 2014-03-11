@@ -1,7 +1,7 @@
 nysTables
 =========
 
-Front-end user interface to add, edit, and remove columns, data from a relational database
+Front-end user interface to add, edit, and remove columns, data from a relational database.
 
 [Demo](http://nysus.net/erb/nysTables/nysTables.html)
 
@@ -13,11 +13,35 @@ Dependencies:
   * jQuery (http://jquery.com/)
   * Datatables (https://datatables.net/)
 
+./db.php
+Settings for database connection, links with built-in
+basic ORM (./orm.php)
+
+```
+<?php
+
+$db = new stdClass();
+
+//Server address
+$db->server = "localhost";
+//Database name
+$db->dba = "database_name";
+$db->user = "";
+$db->pass = "";
+//e.g. sqlsrv, mssql, or mysql
+$db->driver = "sqlsrv";
+
+?>
+```
+
 How-To -- Basic Configuration
 ---------
 
-nysTables gets initialized on a table tag.  
-The most basic configuration requires "config" key or "nys-config" data attribute in the table tag.
+nysTables gets initialized on a table tag in HTML.  
+The most basic configuration requires "config" key in JSON settings or "nys-config" data attribute in the table tag, 
+linking with a configuration file on the server that returns an object with the name of the table "table" and the columns minimum
+columns to show in the table.
+
 The nysTables object returns the settings object for nysTables.
 
 HTML
@@ -30,43 +54,25 @@ HTML
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="nysTables.0.0.1.js"></script>
+
+  <script>
+    $(function() {
+      $("#nysID").nysTables({ 
+        "url": "config.php",
+        "config": "users_config" 
+      });
+    });
+  </script>
+
 </head>
 <body>
   <table id="nysID"></table>
 </body>
 ```
 
-Javascript
-Front end configuration
-
-```
-$(function() {
-  $("#nysID").nysTables({ "config": "users_config" });
-});
-```
-
-./db.php
-Settings for database connection
-
-```
-<?php
-
-$db = new stdClass();
-
-//Server address
-$db->server = "";
-//Database name
-$db->dba = "";
-$db->user = "";
-$db->pass = "";
-//e.g. sqlsrv, mssql, or mysql
-$db->driver = "sqlsrv";
-
-?>
-```
-
 ./config.php
-This is where configuring the table, columns takes place.
+Configure the table name and columns you want to view here that 
+are checked in SQL.
 
 ```
 <?php

@@ -20,9 +20,15 @@
 
       $(function() {
 
-        var nt = $(".nysClass").nysTables();
+        var nt = $(".nysClass").nysTables({
+          "url": "config.php"
+        });
 
-        var nti = $("#nysID").nysTables({ "config": "users_config", "columns": [{ "name": "name", "classes": "nys-center" }] });
+        var nti = $("#nysID").nysTables({ 
+          "url": "config.php",
+          "config": "users_config", 
+          "columns": [{ "name": "name", "classes": "nys-center" }]
+        });
 
       });
 
