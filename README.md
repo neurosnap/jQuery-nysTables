@@ -41,7 +41,7 @@ Front end configuration
 
 ```
 $(function() {
-  var nti = $("#nysID").nysTables({ "config": "users_config" });
+  $("#nysID").nysTables({ "config": "users_config" });
 });
 ```
 
