@@ -5,7 +5,7 @@ Front-end user interface to add, edit, and remove columns, data from a relationa
 
 It currently supports SQL Server and has server scripting written in PHP.
 
-[Demo](http://nysus.net/erb/nysTables/nysTables.html)
+[Demo](http://nysus.net/erb/nysTables/examples/basic.html)
 
 Set-up
 ---------
