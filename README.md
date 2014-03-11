@@ -25,7 +25,7 @@ $db = new stdClass();
 //Server address
 $db->server = "localhost";
 //Database name
-$db->dba = "database_name";
+$db->dba = "";
 $db->user = "";
 $db->pass = "";
 //e.g. sqlsrv, mssql, or mysql
@@ -37,10 +37,10 @@ $db->driver = "sqlsrv";
 How-To -- Basic Configuration
 ---------
 
-nysTables gets initialized on a table tag in HTML.  
-The most basic configuration requires "config" key in JSON settings or "nys-config" data attribute in the table tag, 
+nysTables gets initialized on a table tag in HTML.
+The most basic configuration requires "config" key in the object settings or "nys-config" data attribute in the table tag, 
 linking with a configuration file on the server that returns an object with the name of the table "table" and the columns minimum
-columns to show in the table.
+"columns" to show in the table.
 
 The nysTables object returns the settings object for nysTables.
 
@@ -79,11 +79,12 @@ are checked in SQL.
 
 require_once("./nysTablesAPI.php");
 
-function users_config($_REQUEST, $orm) {
+function users_config() {
 
     $config = new stdClass();
 
     $config->table = "users";
+    //not necessary but filters what is shown
     $config->columns = array("ID", "name", "email", "info");
 
     return $config;
