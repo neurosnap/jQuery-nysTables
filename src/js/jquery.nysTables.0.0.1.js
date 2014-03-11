@@ -13,7 +13,7 @@
 
         //default settings
         this.settings = {
-            "url": "config.php",
+            "url": "../src/php/config.php",
             "loading": "../src/img/loading.gif"
         };
 

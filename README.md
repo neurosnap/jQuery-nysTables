@@ -15,9 +15,8 @@ Dependencies:
   * jQuery (http://jquery.com/)
   * Datatables (https://datatables.net/)
 
-./db.php
-Settings for database connection, links with built-in
-basic ORM (./orm.php)
+Required database configuration file: (./src/php/db.php), 
+links with custom ORM (./orm.php)
 
 ```
 <?php
@@ -72,7 +71,7 @@ HTML
 </body>
 ```
 
-./config.php
+nysTables Server Configuration: (./src/php/config.php)
 Configure the table name and columns you want to view here that 
 are checked in SQL.
 
