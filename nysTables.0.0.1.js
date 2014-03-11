@@ -393,6 +393,7 @@
         var col = { "sTitle": "Manage", "sClass": "nys-manage" };
         ret.columns.push(col);
 
+        //create list of columns with special properties
         for (var prop in data.data[0]) {
 
             var options = { "sClass": "" };
@@ -432,7 +433,7 @@
 
                     var col_settings = scope.settings.columns[f];
 
-                    if (prop !== col_settings.column)
+                    if (prop !== col_settings.name)
                         continue;
 
                     if (!col_settings.hasOwnProperty("classes"))
@@ -455,6 +456,7 @@
 
         }
 
+        //organize row data
         for (var i = 0; i < data.data.length; i++) {
 
             var row_data = ['<a href="#">Edit</a>'];

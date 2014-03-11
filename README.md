@@ -40,30 +40,30 @@ Front end configuration
   $(function() {
 
     var nt = $(".nysClass").nysTables();
-
+    // or
     var nti = $("#nysID").nysTables({ "config": "users_config" });
 
   });
 ```
 
-db.php
+./assets/php/db.php
 Settings for database connection
 
 ```
-  <?php
+<?php
 
-    $db = new stdClass();
+  $db = new stdClass();
 
-    //Server address
-    $db->server = "";
-    //Database name
-    $db->dba = "";
-    $db->user = "";
-    $db->pass = "";
-    //e.g. sqlsrv, mssql, or mysql
-    $db->driver = "sqlsrv";
+  //Server address
+  $db->server = "";
+  //Database name
+  $db->dba = "";
+  $db->user = "";
+  $db->pass = "";
+  //e.g. sqlsrv, mssql, or mysql
+  $db->driver = "sqlsrv";
 
-  ?>
+?>
 ```
 
 config.php
@@ -125,7 +125,7 @@ can be deleted
 DataTable options object that can customize datatable that will be displayed
 
 #### columns as Array of Objects
-  *  column (String) -- Name of the column that nysTables searches to apply certain properties
+  *  name (String) -- Name of the column that nysTables searches to apply certain properties
   *  classes (String or Array of Strings) -- Will attempt to add CSS classes to column of data, useful for event handling. String is looking for space delimited, e.g. { classes: "class one two three" }.
   *  inputs (Object) -- Same as global inputs only targets specific column
 

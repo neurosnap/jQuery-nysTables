@@ -17,7 +17,7 @@
     die("No GET or POST 'config' key matches a function in the API, cannot proceed.");
 
   //Object Relational Map for MSSQL, SQLSRV, and mySQL
-  require("assets/php/orm.php");
+  require("orm.php");
   $orm = new ORM();
 
   $config = call_user_func($_REQUEST["config"], $_REQUEST, $orm);
